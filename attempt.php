@@ -119,7 +119,7 @@ function game_show_header( &$id, &$game, &$course, &$context, &$cm) {
 
     $PAGE->set_title($title);
     $PAGE->set_heading($course->fullname);
-
+    $PAGE->add_body_class('mod-game-' . $game->gamekind);
     echo $OUTPUT->header();
 }
 
