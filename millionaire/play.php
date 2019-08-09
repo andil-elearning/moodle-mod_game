@@ -138,27 +138,13 @@ function game_millionaire_showgrid( $game, $millionaire, $id, $query, $aanswer, 
         $color = substr( '000000'.base_convert($game->param8, 10, 16), -6);
     }
 
-    $color1 = 'black';
-    $color2 = 'DarkOrange';
-    $colorback = "white";
-    $stylequestion = "background:$colorback;color:$color1";
-    $stylequestionselected = "background:$colorback;color:$color2";
-
     $state = $millionaire->state;
     $level = $millionaire->level;
 
-    $background = "style='background:#$color'";
-
     echo '<form name="Form1" method="post" action="attempt.php" id="Form1">';
-    echo "<table cellpadding=0 cellspacing=0 border=0>\r\n";
-    echo "<tr $background>";
-    echo '<td rowspan='.(17 + count( $aanswer)).'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
-    echo "<td colspan=6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-    echo '<td rowspan='.(17 + count( $aanswer)).'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
-    echo "</tr>\r\n";
-
-    echo "<tr height=10%>";
-    echo "<td $background rowspan=3 colspan=2>";
+    echo html_writer::start_div('millionnaire-main');
+    echo html_writer::start_div('millionnaire-header-wrapper');
+    echo html_writer::start_div('millionnaire-header');
 
     $dirgif = 'millionaire/1/';
     if ($state & 1) {
@@ -169,7 +155,7 @@ function game_millionaire_showgrid( $game, $millionaire, $id, $query, $aanswer, 
         $disabled = "";
     }
     $src = game_pix_url($dirgif.$gif, 'mod_game');
-    echo '<input type="image" '.$disabled.' name="Help5050" id="Help5050" Title="50 50" src="'.$src.'" alt="" border="0">&nbsp;';
+    echo '<input type="image" '.$disabled.' name="Help5050" id="Help5050" title="50 50" src="'.$src.'" alt="" border="0">';
 
     if ($state & 2) {
         $gif = "telephonex";
@@ -180,8 +166,8 @@ function game_millionaire_showgrid( $game, $millionaire, $id, $query, $aanswer, 
     }
 
     echo '<input type="image" name="HelpTelephone" '.$disabled.
-        ' id="HelpTelephone" Title="'.get_string( 'millionaire_telephone', 'game').
-        '" src="'.game_pix_url($dirgif.$gif, 'mod_game').'" alt="" border="0">&nbsp;';
+        ' id="HelpTelephone" title="'.get_string( 'millionaire_telephone', 'game').
+        '" src="'.game_pix_url($dirgif.$gif, 'mod_game').'" alt="">';
 
     if ($state & 4) {
         $gif = "peoplex";
@@ -190,130 +176,71 @@ function game_millionaire_showgrid( $game, $millionaire, $id, $query, $aanswer, 
         $gif = "people";
         $disabled = "";
     }
-    echo '<input type="image" name="HelpPeople" '.$disabled.' id="HelpPeople" Title="'.
+    echo '<input type="image" name="HelpPeople" '.$disabled.' id="HelpPeople" title="'.
         get_string( 'millionaire_helppeople', 'game').'" src="'.
-        game_pix_url($dirgif.$gif, 'mod_game').'" alt="" border="0">&nbsp;';
+        game_pix_url($dirgif.$gif, 'mod_game').'" alt="">';
 
-    echo '<input type="image" name="Quit" id="Quit" Title="'.
+    echo '<input type="image" name="Quit" id="Quit" title="'.
         get_string( 'millionaire_quit', 'game').'" src="'.
-        game_pix_url($dirgif.'x', 'mod_game').'" alt="" border="0">&nbsp;';
-    echo "\r\n";
-    echo "</td>\r\n";
+        game_pix_url($dirgif.'x', 'mod_game').'" alt="" border="0">';
+    echo html_writer::end_div();
+    echo html_writer::end_div();
 
-    $styletext = "";
-    if (strpos( $question, 'color:') == false and strpos( $question, 'background:') == false) {
-        $styletext = "style='$stylequestion'";
-    }
-
-    $aval = array( 100, 200, 300, 400, 500, 1000, 1500, 2000, 4000, 5000, 10000, 20000, 40000, 80000, 150000);
+    echo html_writer::start_div('millionnaire-progress-wrapper');
+    $aval = [100, 200, 300, 400, 500, 1000, 1500, 2000, 4000, 5000, 10000, 20000, 40000, 80000, 150000];
     for ($i = 15; $i >= 1; $i--) {
-        $btr = false;
-
-        switch ($i) {
-            case 15:
-                echo "<td rowspan=".(16 + count( $aanswer)).
-                    " $background>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\r\n";
-                $btr = true;
-                break;
-            case 14:
-            case 13:
-                echo "<tr>\n";
-                $btr = true;
-                break;
-            case 12:
-                $question = game_show_query( $game, $query, $question);
-                echo "<tr>";
-                echo "<td rowspan=12 colspan=2 valign=top style=\"$styletext\">$question</td>\r\n";
-                $btr = true;
-                break;
-            case 11:
-            case 10:
-            case 9:
-            case 8:
-            case 7:
-            case 6:
-            case 5:
-            case 4:
-            case 3:
-            case 2:
-            case 1:
-                echo "<tr>";
-                $btr = true;
-                break;
-            default:
-                echo "<tr>";
-                $btr = true;
-        }
-
-        if ($i == $level + 1) {
-            $style = "background:$color1;color:$color2";
-        } else {
-            $style = $stylequestion;
-        }
-
-        echo "<td style='$style' align=right>$i</td>";
-
-        if ($i < $level + 1) {
-            echo "<td style='$style'>&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;</td>";
-        } else if ($i == 15 and $level <= 1) {
-            echo "<td style='$style'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-        } else {
-            echo "<td style='$style'></td>";
-        }
-        echo "<td style='$style' align=right>".sprintf( "%10d", $aval[ $i - 1])."</td>\r\n";
-        if ($btr) {
-            echo "</tr>\r\n";
-        }
+        $statusclass = (($i < $level + 1) ? ' done' : (($i == $level +1) ? ' current' : ''));
+        echo html_writer::start_div('millionnaire-progress' . $statusclass);
+        echo html_writer::div($i, 'milionnaire-progress-step');
+        echo html_writer::div(sprintf("%10d", $aval[ $i - 1]), 'milionnaire-progress-point');
+        echo html_writer::end_div();
     }
-    echo "<tr $background><td colspan=10>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>\r\n";
+    echo html_writer::end_div();
+
+    echo html_writer::start_div('millionnaire-question-answers-wrapper');
+    $question = game_show_query($game, $query, $question);
+    echo html_writer::div($question, 'millionnaire-question');
 
     $bfirst = true;
-    $letters = get_string( 'millionaire_lettersall', 'game');
+    $letters = get_string('millionaire_lettersall', 'game');
     if (($letters == '') or ($letters == '-')) {
-        $letters = get_string( 'lettersall', 'game');
+        $letters = get_string('lettersall', 'game');
     }
+
+    echo html_writer::start_div('millionnaire-answers-wrapper');
     for ($i = 1; $i <= count( $aanswer); $i++) {
         $name = "btAnswer".$i;
         $s = game_substr( $letters, $i - 1, 1);
-
-        $disabled = ( $state == 15 ? "disabled=1" : "");
-
-        $style = $stylequestion;
-        if ((strpos( $aanswer[ $i - 1], 'color:') != false) or (strpos( $aanswer[ $i - 1], 'background:') != false)) {
-            $style = '';
+        $btnattr = ['type' => 'submit', 'name' => $name, 'value' => $s, 'id' => $name . '1'];
+        if ($state == 15) {
+            $btnattr['disabled'] = 'disabled';
         }
-        if ($state == 15 and $i + 1 == $query->correct) {
-            $style = $stylequestionselected;
-        }
-
-        $button = '<input style="'.$style.'" '.$disabled.'type="submit" name="'.$name.'" value="'.$s.'" id="'.$name."1\"".
-            " onmouseover=\"this.style.backgroundColor = '$color2';$name.style.backgroundColor = '$color2';\" ".
-            " onmouseout=\"this.style.backgroundColor = '$colorback';$name.style.backgroundColor = '$colorback';\" >";
+        $button =  html_writer::empty_tag('input', $btnattr);
         $text = game_filtertext($aanswer[ $i - 1], $game->course);
-        $answer = "<span id=$name style=\"$style\" ".
-            " onmouseover=\"this.style.backgroundColor = '$color2';{$name}1.style.backgroundColor = '$color2';\" ".
-            " onmouseout=\"this.style.backgroundColor = '$colorback';{$name}1.style.backgroundColor = '$colorback';\" >".
-            $text.'</span>';
-        if ($aanswer[ $i - 1] != "") {
-            echo "<tr>\n";
+        $answer = html_writer::tag('label', $text, ['id' => $name, 'for' => $name.'1']);
 
-            echo "<td style='$stylequestion'> $button</td>\n";
-            echo "<td $style width=100%> &nbsp; $answer</td>";
-            if ($bfirst) {
-                $bfirst = false;
-                $info = game_filtertext($info, $game->course);
-                echo "<td style=\"$style\" rowspan=".count( $aanswer)." colspan=3>$info</td>";
-            }
-            echo "\r\n</tr>\r\n";
+        if ($aanswer[ $i - 1] != "") {
+            echo html_writer::start_div('millionnaire-answer');
+            echo html_writer::div($button, 'milionnaire-answer-btn');
+            echo html_writer::div($answer, 'milionnaire-answer-text');
+            echo html_writer::end_div();
+
         }
     }
-    echo "<tr><td colspan=10 $background>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>\r\n";
-    echo "<input type=hidden name=state value=\"$state\">\r\n";
-    echo '<input type=hidden name=id value="'.$id.'">';
-    echo "<input type=hidden name=buttons value=\"".count( $aanswer)."\">\r\n";
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'state', 'value' => $state]);
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'id', 'value' => $id]);
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'buttons', 'value' => count($aanswer)]);
+    echo html_writer::end_div();
 
-    echo "</table>\r\n";
-    echo "</form>\r\n";
+    $info = game_filtertext($info, $game->course);
+    if (!empty($info)) {
+        echo html_writer::start_div('milionnaire-info-wrapper');
+        echo html_writer::div($info, 'milionnaire-answer-info');
+        echo html_writer::end_div();
+    }
+    echo html_writer::end_div();
+    echo html_writer::end_div();
+    echo html_writer::end_tag('form');
 }
 
 /**
@@ -330,13 +257,13 @@ function game_millionaire_shownextquestion( $cm, $game, $attempt, $millionaire, 
     game_millionaire_selectquestion( $aanswer, $game, $attempt, $millionaire, $query, $context, $cm, $course);
 
     if ($game->toptext != '') {
-        echo $game->toptext.'<br><br>';
+        echo html_writer::div(html_writer::span($game->toptext, 'milionnaire-toptext'), 'milionnaire-toptext-wrapper');
     }
 
     game_millionaire_showgrid( $game, $millionaire, $cm->id, $query, $aanswer, "", $context, $course);
 
     if ($game->bottomtext != '') {
-        echo '<br>'.$game->bottomtext;
+        echo html_writer::div(html_writer::span($game->bottomtext, 'milionnaire-bottomtext'), 'milionnaire-bottomtext-wrapper');
     }
 }
 
@@ -583,58 +510,58 @@ function game_millionaire_onhelp5050( $game, $id,  &$millionaire, $query, $conte
         for (;;) {
             $wrong = mt_rand( 1, $n);
             if ($wrong != $query->correct) {
-                break;
+                    break;
+                }
+            }
+            for ($i = 1; $i <= $n; $i++) {
+                if ($i <> $wrong and $i <> $query->correct) {
+                    $aanswer[ $i - 1] = "";
+                }
             }
         }
-        for ($i = 1; $i <= $n; $i++) {
-            if ($i <> $wrong and $i <> $query->correct) {
-                $aanswer[ $i - 1] = "";
+
+        game_millionaire_showgrid(  $game, $millionaire, $id, $query, $aanswer, '', $context);
+    }
+
+    /**
+     * One help telephone
+     *
+     * @param stdClass $game
+     * @param int $id
+     * @param stdClass $millionaire
+     * @param stdClass $query
+     * @param stdClass $context
+     */
+    function game_millionaire_onhelptelephone(  $game, $id,  &$millionaire, $query, $context) {
+        game_millionaire_loadquestions( $game, $millionaire, $query, $aanswer, $context);
+
+        if (($millionaire->state & 2) != 0) {
+            game_millionaire_ShowGrid( $game, $millionaire, $id, $query, $aanswer, '', $context);
+            return;
+        }
+
+        game_millionaire_setstate( $millionaire, 2);
+
+        $n = count( $aanswer);
+        if ($n < 2) {
+            $wrong = $query->correct;
+        } else {
+            for (;;) {
+                $wrong = mt_rand( 1, $n);
+                if ($wrong != $query->correct) {
+                    break;
+                }
             }
         }
-    }
 
-    game_millionaire_showgrid(  $game, $millionaire, $id, $query, $aanswer, '', $context);
-}
-
-/**
- * One help telephone
- *
- * @param stdClass $game
- * @param int $id
- * @param stdClass $millionaire
- * @param stdClass $query
- * @param stdClass $context
- */
-function game_millionaire_onhelptelephone(  $game, $id,  &$millionaire, $query, $context) {
-    game_millionaire_loadquestions( $game, $millionaire, $query, $aanswer, $context);
-
-    if (($millionaire->state & 2) != 0) {
-        game_millionaire_ShowGrid( $game, $millionaire, $id, $query, $aanswer, '', $context);
-        return;
-    }
-
-    game_millionaire_setstate( $millionaire, 2);
-
-    $n = count( $aanswer);
-    if ($n < 2) {
-        $wrong = $query->correct;
-    } else {
-        for (;;) {
-            $wrong = mt_rand( 1, $n);
-            if ($wrong != $query->correct) {
-                break;
-            }
+        // With 80% gives the correct answer.
+        if (mt_rand( 1, 10) <= 8) {
+            $response = $query->correct;
+        } else {
+            $response = $wrong;
         }
-    }
 
-    // With 80% gives the correct answer.
-    if (mt_rand( 1, 10) <= 8) {
-        $response = $query->correct;
-    } else {
-        $response = $wrong;
-    }
-
-    $info = get_string( 'millionaire_info_telephone', 'game').'<br><b>'.$aanswer[ $response - 1].'</b>';
+        $info = get_string( 'millionaire_info_telephone', 'game').'<br><b>'.$aanswer[ $response - 1].'</b>';
 
     game_millionaire_showgrid( $game, $millionaire, $id, $query, $aanswer, $info, $context);
 }
@@ -731,7 +658,7 @@ function game_millionaire_onanswer( $cm, $game, $attempt, &$millionaire, $query,
     if ($answer == $query->correct) {
         // Correct.
         if ($finish) {
-            echo get_string( 'win', 'game');
+            echo html_writer::div(get_string( 'win', 'game'), 'milionnaire-feedback-win');
             game_millionaire_OnQuit( $cm, $game, $attempt, $query, $course);
         } else {
             $millionaire->queryid = 0;  // So the next function select a new question.
@@ -739,8 +666,9 @@ function game_millionaire_onanswer( $cm, $game, $attempt, &$millionaire, $query,
         game_millionaire_ShowNextQuestion( $cm, $game, $attempt, $millionaire, $context, $course);
     } else {
         // Wrong answer.
-        $info = get_string( 'millionaire_info_wrong_answer', 'game').
-            '<br><br><b><center>'.$aanswer[ $query->correct - 1].'</b>';
+        $info = html_writer::start_div('millionnaire-feedback-wrong-wrapper').
+        html_writer::div(get_string('millionaire_info_wrong_answer', 'game'), 'millionaire-info-wrong-answer-title').
+        html_writer::div($aanswer[ $query->correct - 1], 'milionnaire-info-wrong-answer-answer');
 
         $millionaire->state = 15;
         game_millionaire_ShowGrid( $game, $millionaire, $cm->id, $query, $aanswer, $info, $context);
@@ -761,8 +689,7 @@ function game_millionaire_onquit( $cm, $game, $attempt, $query, $course) {
 
     game_updateattempts( $game, $attempt, -1, true, $cm, $course);
 
-    echo '<br>';
     echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}\">".
-        get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
+        get_string( 'nextgame', 'game').'</a>     ';
     echo "<a href=\"{$CFG->wwwroot}/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
 }
