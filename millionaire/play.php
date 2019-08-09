@@ -184,7 +184,6 @@ function game_millionaire_showgrid( $game, $millionaire, $id, $query, $aanswer, 
         get_string( 'millionaire_quit', 'game').'" src="'.
         game_pix_url($dirgif.'x', 'mod_game').'" alt="" border="0">';
     echo html_writer::end_div();
-    echo html_writer::end_div();
 
     echo html_writer::start_div('millionnaire-progress-wrapper');
     $aval = [100, 200, 300, 400, 500, 1000, 1500, 2000, 4000, 5000, 10000, 20000, 40000, 80000, 150000];
@@ -211,11 +210,8 @@ function game_millionaire_showgrid( $game, $millionaire, $id, $query, $aanswer, 
     for ($i = 1; $i <= count( $aanswer); $i++) {
         $name = "btAnswer".$i;
         $s = game_substr( $letters, $i - 1, 1);
-        $btnattr = ['type' => 'submit', 'name' => $name, 'value' => $s, 'id' => $name . '1'];
-        if ($state == 15) {
-            $btnattr['disabled'] = 'disabled';
-        }
-        $button =  html_writer::empty_tag('input', $btnattr);
+        $disabled = ( $state == 15 ? 'disabled' : '');
+        $button =  html_writer::empty_tag('input', ['type' => 'submit', 'name' => $name, 'value' => $s, 'id' => $name . '1', 'disabled' => $disabled]);
         $text = game_filtertext($aanswer[ $i - 1], $game->course);
         $answer = html_writer::tag('label', $text, ['id' => $name, 'for' => $name.'1']);
 
@@ -223,21 +219,17 @@ function game_millionaire_showgrid( $game, $millionaire, $id, $query, $aanswer, 
             echo html_writer::start_div('millionnaire-answer');
             echo html_writer::div($button, 'milionnaire-answer-btn');
             echo html_writer::div($answer, 'milionnaire-answer-text');
+            if ($bfirst) {
+                $bfirst = false;
+                $info = game_filtertext($info, $game->course);
+                echo html_writer::div($info, 'milionnaire-answer-info');
+            }
             echo html_writer::end_div();
-
         }
     }
     echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'state', 'value' => $state]);
     echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'id', 'value' => $id]);
     echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'buttons', 'value' => count($aanswer)]);
-    echo html_writer::end_div();
-
-    $info = game_filtertext($info, $game->course);
-    if (!empty($info)) {
-        echo html_writer::start_div('milionnaire-info-wrapper');
-        echo html_writer::div($info, 'milionnaire-answer-info');
-        echo html_writer::end_div();
-    }
     echo html_writer::end_div();
     echo html_writer::end_div();
     echo html_writer::end_tag('form');
