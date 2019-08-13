@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.e
 
 /**
  * This files plays the game "Crossword".
@@ -138,12 +138,15 @@ function showlegend( $legend, $title) {
     if (count( $legend) == 0) {
         return;
     }
-
-    echo "<br><b>$title</b><br>";
+    echo "<div class='legend'>";
+    echo "<h3>$title</h3>";
+    echo "<div>";
     foreach ($legend as $key => $line) {
         $line = game_repairquestion( $line);
-        echo game_filtertext( "$key: $line<br>", 0);
+        echo game_filtertext( "<div>$key: $line</div>", 0);
     }
+    echo "</div>";
+    echo "</div>";
 }
 
 /**
@@ -184,11 +187,10 @@ function game_cross_play( $cm, $game, $attempt, $crossrec, $g, $onlyshow, $shows
 
     if ($done or $endofgame) {
         if ($endofgame == false) {
-            echo '<B>'.get_string( 'win', 'game').'</B><BR>';
+            echo '<div class="win">'.get_string( 'win', 'game').'</div>';
         }
         if (game_can_start_new_attempt( $game)) {
-            echo '<br>';
-            echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}&forcenew=1\">".
+            echo "<div class=\"newgame\"> <a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}&forcenew=1\"> </div>".
                 get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
         }
     } else if ($info != '') {
@@ -233,22 +235,18 @@ if ($game->toptext != '') {
     the page.
 </div>
 
-
-<p><table cellpadding="0" cellspacing="0" border="0">
+<p><table class="tablegame">
 
 <?php
 if ($game->param3 == 1) {
     // Legends is at the right.
-    echo "<tr>\r\n";
     game_cross_show_welcome( $game);
-    echo "</tr>\r\n";
-    echo "<tr><tr><td>&nbsp</td></tr>\r\n";
 }
 ?>
 
 <tr>
 <td class="crosswordarea">
-<table id="crossword" cellpadding="3" cellspacing="0" style="display: none; border-collapse: collapse;" <?php echo $textdir;?>>
+<table id="crossword" cellpadding="3" cellspacing="0" <?php echo $textdir;?>>
 
 <script language="JavaScript" type="text/javascript"><!--
 
@@ -908,7 +906,7 @@ if ($game->param3 == 1) {
 
 <?php
 if ($onlyshow == false) {
-    echo '<div style="margin-top: 1em;">';
+    echo '<div>';
 
     if (!$done) {
         echo '<button id="checkbutton" type="button" onclick="CheckServerClick( 0);" style="display: none;">'.
@@ -1010,7 +1008,7 @@ function game_cross_show_welcome( $game) {
  */
 function game_cross_show_welcome0( $game) {
 ?>
-<td valign="top" style="padding-left: 1em;">
+<div class="answerbox">
 
 <div id="welcomemessage" class="answerboxstyle" style="display:none;">  
 <?php echo get_string( 'cross_welcome', 'game'); ?> </div>
@@ -1022,13 +1020,6 @@ function game_cross_show_welcome0( $game) {
 <div id="wordinfo" style="font-size:8pt;color:#808080"> </div>
 <div id="wordclue" class="cluebox"> </div>
 <div style="margin-top:1em;"><input id="wordentry" type="text" size="24"
-<?php
-echo 'style="font-weight: bold; ';
-if ($game->param6 == 0) {
-    echo 'text-transform:uppercase;';
-}
-echo '"';
-?>
  onkeypress="WordEntryKeyPress(event)" onchange="WordEntryKeyPress(event)" autocomplete="off"></div>
 <?php
 if ($game->param3 == 2) {
@@ -1046,7 +1037,7 @@ if ($game->param3 == 2) {
 </div>
 
 
-</td>
+</div>
 <?php
 }
 
@@ -1055,7 +1046,7 @@ if ($game->param3 == 2) {
  */
 function game_cross_show_welcome1() {
 ?>
-<td valign="top" style="padding-left: 1em;">
+<div class="answerbox">
 
 <div id="welcomemessage" class="answerboxstyle" style="display:none;">  
 <?php echo get_string( 'cross_welcome', 'game'); ?> </div>
@@ -1073,8 +1064,6 @@ function game_cross_show_welcome1() {
 <button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
 </td></tr></table>
 
-</td><td>&nbsp</td><td>
-
 <div id="answerbox2" class="answerboxstyle" style="display:none;">
 <h3 id="wordlabel" style="text-transform:uppercase;margin:0;"> </h3>
 <div id="wordinfo" style="font-size:8pt;color:#808080"> </div>
@@ -1083,7 +1072,7 @@ function game_cross_show_welcome1() {
 
 </div>
 
-</td>
+</div>
 <?php
 }
 
