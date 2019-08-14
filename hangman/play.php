@@ -276,7 +276,7 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
         if ($game->param3 == 0) {
             $game->param3 = 1;
         }
-        echo "<div class='hangman'>";
+        echo "<div class='hangman-game'>";
         echo "<br/><img src=\"".game_pix_url('hangman/'.$game->param3.'/hangman_'.$wrong, 'mod_game')."\"";
         $message  = sprintf( get_string( 'hangman_wrongnum', 'game'), $wrong, $max);
         echo ' ALIGN="MIDDLE" BORDER="0" HEIGHT="100" alt="'.$message.'"/>';
@@ -288,7 +288,7 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
         } else {
             $i = $max - $wrong;
             if ($i > 1) {
-                echo '<span class="trysentence">'.get_string( 'hangman_restletters_many', 'game', $i) . '</span>';
+                echo '<span class="hangman-trysentence">'.get_string( 'hangman_restletters_many', 'game', $i) . '</span>';
             } else {
                 echo ' '.get_string( 'hangman_restletters_one', 'game');
             }
@@ -296,9 +296,9 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
                 echo '<SPAN dir="'.($wordrtl ? 'rtl' : 'ltr').'">';
             }
 
-            echo "<span class=\"wordline\">$wordline</span>";
+            echo "<span class=\"hangman-wordline\">$wordline</span>";
             if ($wordline2 != '') {
-                echo "<span class=\"wordline\">$wordline2</span>";
+                echo "<span class=\"hangman-wordline\">$wordline2</span>";
             }
 
             if ($reverseprint) {
@@ -306,7 +306,7 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
             }
 
             if ($hangman->finishedword == false) {
-                echo '<br/><span class="hangman_letters">' . get_string( 'hangman_letters', 'game').' '.$links." </span>";
+                echo '<br/><span class="hangman-letterstitle">' . get_string( 'hangman_letters', 'game').' '.$links." </span>";
             }
         }
         echo "</div>";
@@ -389,7 +389,7 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
     if ($game->param5) {
         $s = trim( game_filtertext( $query->questiontext, $game->course));
         if ($s != '.' && $s <> '') {
-            echo "<div class =\"definition\">".$s.'</div>';
+            echo "<div class =\"hangman-definition\">".$s.'</div>';
         }
         if ($query->attachment != '') {
             $args = explode( '/', $query->attachment);
@@ -436,7 +436,7 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
 
     $lenalpha = game_strlen( $alpha);
     $fontsize = 5;
-    $links .= '<div class = \'letters\'>';
+    $links .= '<div class = \'hangman-letters\'>';
     for ($c = 0; $c < $lenalpha; $c++) {
         $char = game_substr( $alpha, $c, 1);
 
@@ -446,16 +446,16 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
             if ($onlyshow or $showsolution) {
                 $links .= $char;
             } else {
-                $links .= "<span class = 'last'><a href=\"attempt.php?$params\">$char</a></span>";
+                $links .= "<span class = 'hangman-last'><a href=\"attempt.php?$params\">$char</a></span>";
             }
             continue;
         }
 
         if (game_strpos($word, $char) === false) {
-            $links .= '<span class = "fail">' . $char . '</span>';
+            $links .= '<span class = "hangman-fail">' . $char . '</span>';
             $wrong++;
         } else {
-            $links .= '<span class = "work">' . $char . '</span>';
+            $links .= '<span class = "hangman-work">' . $char . '</span>';
         }
     }
     $links .= '</div>';
@@ -528,9 +528,9 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
 function hangman_oncorrect( $cm, $wordline, $game, $attempt, $hangman, $query, $course, $onlyshow, $showsolution) {
     global $DB;
 
-    echo '<span class=\'answer\'>' . $wordline . '</span>';
+    echo '<span class=\'hangman-answer\'>' . $wordline . '</span>';
 
-    echo '<span class=\'congrats\'>'.get_string( 'win', 'game').'</span>';
+    echo '<span class=\'hangman-congrats\'>'.get_string( 'win', 'game').'</span>';
     if ($query->answerid) {
         $feedback = $DB->get_field( 'question_answers', 'feedback', array( 'id' => $query->answerid));
         if ($feedback != '') {
@@ -560,17 +560,17 @@ function hangman_oncorrect( $cm, $wordline, $game, $attempt, $hangman, $query, $
  * @param string $wordline2
  */
 function hangman_onincorrect( $cm, $wordline, $word, $game, $attempt, $hangman, $onlyshow, $showsolution, $course, $wordline2) {
-    echo "<span class=\"onincorret\">$wordline</span>";
+    echo "<span class=\"hangman-onincorret\">$wordline</span>";
 
     if ( $showsolution && $wordline2 != '') {
-        echo "<span class=\"onincorret\">$wordline2</span>";
+        echo "<span class=\"hangman-onincorret\">$wordline2</span>";
     }
 
     if ( $onlyshow or $showsolution) {
         return;
     }
 
-    echo '<span class="loose">'.get_string( 'hangman_loose', 'game').'</span>';
+    echo '<span class="hangman-loose">'.get_string( 'hangman_loose', 'game').'</span>';
 
     if ($game->param6) {
         // Show the correct answer.
@@ -579,7 +579,7 @@ function hangman_onincorrect( $cm, $wordline, $word, $game, $attempt, $hangman, 
         } else {
             echo get_string( 'hangman_correct_word', 'game');
         }
-        echo '<span class="loose">'. $word. '</span>';
+        echo '<span class="hangman-loose">'. $word. '</span>';
     }
 
     game_hangman_show_nextword( $cm, $game, $attempt, $hangman, $course);
@@ -600,14 +600,14 @@ function game_hangman_show_nextword( $cm, $game, $attempt, $hangman, $course) {
     echo '<br/>';
     if (($hangman->try < $hangman->maxtries) or ($hangman->maxtries == 0)) {
         // Continue to next word.
-        $params = "id={$cm->id}&action2=nextword\">".get_string( 'nextword', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp;';
+        $params = "id={$cm->id}&action2=nextword\">".get_string( 'nextword', 'game').'</a>';
         echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?$params";
     } else {
         game_hangman_onfinishgame( $cm, $game, $attempt, $hangman, $course);
 
         if (game_can_start_new_attempt( $game)) {
             echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}\">".
-                get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
+                get_string( 'nextgame', 'game').'</a>';
         }
     }
 

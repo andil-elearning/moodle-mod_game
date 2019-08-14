@@ -181,8 +181,8 @@ $string[ 'hangman_correct_phrase'] = 'The correct phrase was:';
 $string[ 'hangman_correct_word'] = 'The correct word was:';
 $string[ 'hangman_gradeinstance'] = 'Grade in whole game';
 $string[ 'hangman_letters'] = 'Letters:';
-$string[ 'hangman_restletters_many'] = 'You have <span class="trynumber">{$a}</span> tries';
-$string[ 'hangman_restletters_one'] = 'You have <span class="trynumber">ONLY 1</span> try';
+$string[ 'hangman_restletters_many'] = 'You have <span class="hangman-trynumber">{$a}</span> tries';
+$string[ 'hangman_restletters_one'] = 'You have <span class="hangman-trynumber">ONLY 1</span> try';
 $string[ 'hangman_wrongnum'] = 'Wrong: %d out of %d';
 $string[ 'nextword'] = 'Next word';
 

@@ -138,7 +138,7 @@ function showlegend( $legend, $title) {
     if (count( $legend) == 0) {
         return;
     }
-    echo "<div class='legend'>";
+    echo "<div class='crossword-legend'>";
     echo "<h3>$title</h3>";
     echo "<div>";
     foreach ($legend as $key => $line) {
@@ -187,10 +187,10 @@ function game_cross_play( $cm, $game, $attempt, $crossrec, $g, $onlyshow, $shows
 
     if ($done or $endofgame) {
         if ($endofgame == false) {
-            echo '<div class="win">'.get_string( 'win', 'game').'</div>';
+            echo '<div class="crossword-win">'.get_string( 'win', 'game').'</div>';
         }
         if (game_can_start_new_attempt( $game)) {
-            echo "<div class=\"newgame\"> <a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}&forcenew=1\"> </div>".
+            echo "<div class=\"crossword-newgame\"> <a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}&forcenew=1\"> </div>".
                 get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
         }
     } else if ($info != '') {
@@ -229,13 +229,13 @@ if ($game->toptext != '') {
 ?>
 <h1></h1>
 
-<div id="waitmessage" class="answerboxstyle">
+<div id="waitmessage" class="crossword-answerboxstyle">
     This interactive crossword puzzle requires JavaScript and a reasonably recent web browser, such as Internet Explorer 5.5
     or later, Netscape 7, Mozilla, Firefox, or Safari.  If you have disabled web page scripting, please re-enable it and refresh
     the page.
 </div>
 
-<p><table class="tablegame">
+<p><table class="crossword-tablegame">
 
 <?php
 if ($game->param3 == 1) {
@@ -245,7 +245,7 @@ if ($game->param3 == 1) {
 ?>
 
 <tr>
-<td class="crosswordarea">
+<td class="crossword-crosswordarea">
 <table id="crossword" cellpadding="3" cellspacing="0" <?php echo $textdir;?>>
 
 <script language="JavaScript" type="text/javascript"><!--
@@ -1008,17 +1008,17 @@ function game_cross_show_welcome( $game) {
  */
 function game_cross_show_welcome0( $game) {
 ?>
-<div class="answerbox">
+<div class="crossword-answerbox">
 
-<div id="welcomemessage" class="answerboxstyle" style="display:none;">  
+<div id="welcomemessage" class="crossword-answerboxstyle" style="display:none;">  
 <?php echo get_string( 'cross_welcome', 'game'); ?> </div>
 
 <div id="answerbox2"  style="display:none;"></div>
 
-<div id="answerbox" class="answerboxstyle" style="display:none;">
+<div id="answerbox" class="crossword-answerboxstyle" style="display:none;">
 <h3 id="wordlabel" style="text-transform:uppercase;margin:0;"> </h3>
 <div id="wordinfo" style="font-size:8pt;color:#808080"> </div>
-<div id="wordclue" class="cluebox"> </div>
+<div id="wordclue" class="crossword-cluebox"> </div>
 <div style="margin-top:1em;"><input id="wordentry" type="text" size="24"
  onkeypress="WordEntryKeyPress(event)" onchange="WordEntryKeyPress(event)" autocomplete="off"></div>
 <?php
@@ -1046,12 +1046,12 @@ if ($game->param3 == 2) {
  */
 function game_cross_show_welcome1() {
 ?>
-<div class="answerbox">
+<div class="crossword-answerbox">
 
-<div id="welcomemessage" class="answerboxstyle" style="display:none;">  
+<div id="welcomemessage" class="crossword-answerboxstyle" style="display:none;">  
 <?php echo get_string( 'cross_welcome', 'game'); ?> </div>
 
-<div id="answerbox" class="answerboxstyle" style="display:none;">
+<div id="answerbox" class="crossword-answerboxstyle" style="display:none;">
 
 <div style="margin-top:1em;"><input id="wordentry" type="text" size="24"
  style="font-weight: bold; text-transform:uppercase;"
@@ -1064,10 +1064,10 @@ function game_cross_show_welcome1() {
 <button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
 </td></tr></table>
 
-<div id="answerbox2" class="answerboxstyle" style="display:none;">
+<div id="answerbox2" class="crossword-answerboxstyle" style="display:none;">
 <h3 id="wordlabel" style="text-transform:uppercase;margin:0;"> </h3>
 <div id="wordinfo" style="font-size:8pt;color:#808080"> </div>
-<div id="wordclue" class="cluebox"> </div>
+<div id="wordclue" class="crossword-cluebox"> </div>
 </div>
 
 </div>
