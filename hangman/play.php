@@ -276,7 +276,8 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
         if ($game->param3 == 0) {
             $game->param3 = 1;
         }
-        echo "\r\n<br/><img src=\"".game_pix_url('hangman/'.$game->param3.'/hangman_'.$wrong, 'mod_game')."\"";
+        echo "<div class='hangman'>";
+        echo "<br/><img src=\"".game_pix_url('hangman/'.$game->param3.'/hangman_'.$wrong, 'mod_game')."\"";
         $message  = sprintf( get_string( 'hangman_wrongnum', 'game'), $wrong, $max);
         echo ' ALIGN="MIDDLE" BORDER="0" HEIGHT="100" alt="'.$message.'"/>';
 
@@ -287,7 +288,7 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
         } else {
             $i = $max - $wrong;
             if ($i > 1) {
-                echo ' '.get_string( 'hangman_restletters_many', 'game', $i);
+                echo '<span class="trysentence">'.get_string( 'hangman_restletters_many', 'game', $i) . '</span>';
             } else {
                 echo ' '.get_string( 'hangman_restletters_one', 'game');
             }
@@ -295,9 +296,9 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
                 echo '<SPAN dir="'.($wordrtl ? 'rtl' : 'ltr').'">';
             }
 
-            echo "<br/><font size=\"5\">\n$wordline</font>\r\n";
+            echo "<span class=\"wordline\">$wordline</span>";
             if ($wordline2 != '') {
-                echo "<br/><font size=\"5\">\n$wordline2</font>\r\n";
+                echo "<span class=\"wordline\">$wordline2</span>";
             }
 
             if ($reverseprint) {
@@ -305,9 +306,10 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
             }
 
             if ($hangman->finishedword == false) {
-                echo "<br/><br/><BR/>".get_string( 'hangman_letters', 'game').' '.$links."\r\n";
+                echo '<br/><span class="hangman_letters">' . get_string( 'hangman_letters', 'game').' '.$links." </span>";
             }
         }
+        echo "</div>";
     } else {
         // This word is correct. If reach the max number of word I have to finish else continue with next word.
         hangman_oncorrect( $cm, $wordline, $game, $attempt, $hangman, $query, $course, $onlyshow, $showsolution);
@@ -386,8 +388,8 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
 
     if ($game->param5) {
         $s = trim( game_filtertext( $query->questiontext, $game->course));
-        if ($s != '.' and $s <> '') {
-            echo "<br/><b>".$s.'</b>';
+        if ($s != '.' && $s <> '') {
+            echo "<div class =\"definition\">".$s.'</div>';
         }
         if ($query->attachment != '') {
             $args = explode( '/', $query->attachment);
@@ -404,7 +406,6 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
                 }
             }
         }
-        echo "<br/><br/>";
     }
 
     $wordline = $wordline2 = "";
@@ -418,16 +419,16 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
         $char = game_substr( $word, $x, 1);
 
         if ($showsolution) {
-            $wordline2 .= ( $char == " " ? '&nbsp; ' : $char);
+            $wordline2 .= ( $char == " " ? ' ' : $char);
             $done = 0;
         }
 
         if (game_strpos($letters, $char) === false) {
-            $wordline .= "_<font size=\"1\">&nbsp;</font>\r\n";
+            $wordline .= "_";
             $done = 0;
             $answer .= '_';
         } else {
-            $wordline .= ( $char == " " ? '&nbsp; ' : $char);
+            $wordline .= ( $char == " " ? ' ' : $char);
             $answer .= $char;
             $correct++;
         }
@@ -435,7 +436,7 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
 
     $lenalpha = game_strlen( $alpha);
     $fontsize = 5;
-
+    $links .= '<div class = \'letters\'>';
     for ($c = 0; $c < $lenalpha; $c++) {
         $char = game_substr( $alpha, $c, 1);
 
@@ -445,18 +446,19 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
             if ($onlyshow or $showsolution) {
                 $links .= $char;
             } else {
-                $links .= "<font size=\"$fontsize\"><a href=\"attempt.php?$params\">$char</a></font>\r\n";
+                $links .= "<span class = 'last'><a href=\"attempt.php?$params\">$char</a></span>";
             }
             continue;
         }
 
         if (game_strpos($word, $char) === false) {
-            $links .= "\r\n<font size=\"$fontsize\" color=\"red\">$char </font>";
+            $links .= '<span class = "fail">' . $char . '</span>';
             $wrong++;
         } else {
-            $links .= "\r\n<B><font size=\"$fontsize\">$char </font></B> ";
+            $links .= '<span class = "work">' . $char . '</span>';
         }
     }
+    $links .= '</div>';
     $finishedword = ($done or $wrong >= $max);
     $finished = false;
 
@@ -526,9 +528,9 @@ function hangman_showpage(&$done, &$correct, &$wrong, $max, &$wordline, &$wordli
 function hangman_oncorrect( $cm, $wordline, $game, $attempt, $hangman, $query, $course, $onlyshow, $showsolution) {
     global $DB;
 
-    echo "<br/><br/><font size=\"5\">\n$wordline</font>\r\n";
+    echo '<span class=\'answer\'>' . $wordline . '</span>';
 
-    echo '<p><br/><font size="5" color="green">'.get_string( 'win', 'game').'</font><BR/><BR/></p>';
+    echo '<span class=\'congrats\'>'.get_string( 'win', 'game').'</span>';
     if ($query->answerid) {
         $feedback = $DB->get_field( 'question_answers', 'feedback', array( 'id' => $query->answerid));
         if ($feedback != '') {
@@ -558,26 +560,26 @@ function hangman_oncorrect( $cm, $wordline, $game, $attempt, $hangman, $query, $
  * @param string $wordline2
  */
 function hangman_onincorrect( $cm, $wordline, $word, $game, $attempt, $hangman, $onlyshow, $showsolution, $course, $wordline2) {
-    echo "\r\n<br/><br/><font size=\"5\">\n$wordline</font>\r\n";
+    echo "<span class=\"onincorret\">$wordline</span>";
 
     if ( $showsolution && $wordline2 != '') {
-        echo "<br/><font size=\"5\">\n$wordline2</font>\r\n";
+        echo "<span class=\"onincorret\">$wordline2</span>";
     }
 
     if ( $onlyshow or $showsolution) {
         return;
     }
 
-    echo '<p><BR/><font size="5" color="red">'.get_string( 'hangman_loose', 'game').'</font><BR/><BR/></p>';
+    echo '<span class="loose">'.get_string( 'hangman_loose', 'game').'</span>';
 
     if ($game->param6) {
         // Show the correct answer.
         if (game_strpos($word, ' ') != false) {
-            echo '<br/>'.get_string( 'hangman_correct_phrase', 'game');
+            echo get_string( 'hangman_correct_phrase', 'game');
         } else {
-            echo '<br/>'.get_string( 'hangman_correct_word', 'game');
+            echo get_string( 'hangman_correct_word', 'game');
         }
-        echo '<B>'.$word."</B><BR/><BR/>\r\n";
+        echo '<span class="loose">'. $word. '</span>';
     }
 
     game_hangman_show_nextword( $cm, $game, $attempt, $hangman, $course);

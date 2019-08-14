@@ -177,12 +177,12 @@ $string[ 'game:view'] = 'view';
 $string[ 'game:viewreports'] = 'viewreports';
 
 // File hangman/play.php.
-$string[ 'hangman_correct_phrase'] = 'The correct phrase was: &nbsp';
-$string[ 'hangman_correct_word'] = 'The correct word was: &nbsp';
+$string[ 'hangman_correct_phrase'] = 'The correct phrase was:';
+$string[ 'hangman_correct_word'] = 'The correct word was:';
 $string[ 'hangman_gradeinstance'] = 'Grade in whole game';
-$string[ 'hangman_letters'] = 'Letters: &nbsp';
-$string[ 'hangman_restletters_many'] = 'You have <b>{$a}</b> tries';
-$string[ 'hangman_restletters_one'] = 'You have <b>ONLY 1</b> try';
+$string[ 'hangman_letters'] = 'Letters:';
+$string[ 'hangman_restletters_many'] = 'You have <span class="trynumber">{$a}</span> tries';
+$string[ 'hangman_restletters_one'] = 'You have <span class="trynumber">ONLY 1</span> try';
 $string[ 'hangman_wrongnum'] = 'Wrong: %d out of %d';
 $string[ 'nextword'] = 'Next word';
 
@@ -252,7 +252,7 @@ $string[ 'javame_vendor'] = 'Vendor:';
 $string[ 'javame_version'] = 'Version:';
 
 // File exporthtml_hangman.php.
-$string[ 'hangman_loose'] = '<BIG><B>Game over</B></BIG>';
+$string[ 'hangman_loose'] = 'Game over';
 $string[ 'html_hangman_new'] = 'New';
 
 // File exporthtml_millionaire.php.
