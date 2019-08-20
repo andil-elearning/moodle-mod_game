@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.e
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * This files plays the game "Crossword".
@@ -1010,7 +1010,7 @@ function game_cross_show_welcome0( $game) {
 ?>
 <div class="crossword-answerbox">
 
-<div id="welcomemessage" class="crossword-answerboxstyle" style="display:none;">  
+<div id="welcomemessage" class="crossword-answerboxstyle" style="display:none;">
 <?php echo get_string( 'cross_welcome', 'game'); ?> </div>
 
 <div id="answerbox2"  style="display:none;"></div>
@@ -1048,7 +1048,7 @@ function game_cross_show_welcome1() {
 ?>
 <div class="crossword-answerbox">
 
-<div id="welcomemessage" class="crossword-answerboxstyle" style="display:none;">  
+<div id="welcomemessage" class="crossword-answerboxstyle" style="display:none;">
 <?php echo get_string( 'cross_welcome', 'game'); ?> </div>
 
 <div id="answerbox" class="crossword-answerboxstyle" style="display:none;">
