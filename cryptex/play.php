@@ -262,22 +262,10 @@ function game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm,
         }
     }
 ?>
-<style type="text/css"><!--
-
-.answerboxstyle  {
-background-color:	#FFFAF0;
-border-color:	#808080;
-border-style:	solid;
-border-width:	1px;
-display:	block;
-padding:	.75em;
-width:	240pt;
-}
---></style>
 <?php
 
     $grade = round( 100 * $gradeattempt);
-    echo get_string( 'grade', 'game').' '.$grade.' %';
+    echo '<span class=\'cryptex_gradestring\'>' . get_string( 'grade', 'game').' '.$grade.' % </span>';
 
     echo '<br>';
 
@@ -287,7 +275,7 @@ width:	240pt;
 ?>
 </td>
 
-<td width=10%>&nbsp;</td>
+<td width=10%></td>
 <td>
 
 <form  method="get" action="<?php echo $CFG->wwwroot?>/mod/game/attempt.php">
@@ -297,12 +285,9 @@ width:	240pt;
 <input id="q" name="q" type="hidden" >
 <input id="id" name="id" value="<?php echo $cm->id; ?>" type="hidden">
 
-<div style="margin-top:1em;"><input id="answer" name="answer" type="text" size="24"
- style="font-weight: bold; text-transform:uppercase;" autocomplete="off"></div>
+<div class="cryptex_answer"><input id="answer" name="answer" type="text" autocomplete="off"></div>
 
-<table border="0" cellspacing="0" cellpadding="0" width="100%" style="margin-top:1em;"><tr>
-<td align="right">
-<button id="okbutton" type="submit" class="button" style="font-weight: bold;">OK</button> &nbsp;
+<button id="okbutton" type="submit" class="button" style="font-weight: bold;">OK</button>
 <button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
 </td></tr></table>
 </form>
@@ -362,8 +347,7 @@ foreach ($questions as $key => $q) {
             continue;
         }
     }
-
-    $question = game_show_query( $game, $q, "$i. ".$q->questiontext, $context);
+    $question = '<span class=\'cryptex_answertext\'> ' . game_show_query( $game, $q, "$i. ".$q->questiontext, $context) . '</span>';
     if ($q->questionid) {
         $question2 = str_replace( array("\'", '\"'), array("'", '"'), $question);
         $question2 = game_filterquestion($question2, $q->questionid, $context->id, $game->course);
@@ -378,14 +362,14 @@ foreach ($questions as $key => $q) {
     echo "<script>var msg{$q->id}=".json_encode( $question2).';</script>';
     if (($onlyshow == false) and ($showsolution == false)) {
         if (($game->param8 == 0) || ($game->param8 > $q->tries)) {
-            $question .= ' &nbsp;<input type="submit" value="'.
-            get_string( 'answer').'" onclick="OnCheck( '.$q->id.",msg{$q->id});\" />";
+            $question .= ' <div class="cryptex_answerbutton" > <input type="submit" value="'.
+            get_string( 'answer').'" onclick="OnCheck( '.$q->id.",msg{$q->id});\" /> </div>";
         }
     }
-    echo $question;
+    echo '<div class="cryptex_answerline" >' . $question . '</div>';
 
     if ($showsolution) {
-        echo " &nbsp;&nbsp;&nbsp;$q->answertext<B></b>";
+        echo "$q->answertext";
     }
     echo '<br>';
 }
@@ -432,10 +416,10 @@ if ($print) {
 function game_cryptex_onfinished( $cm, $game, $attempt, $cryptexrec, $course) {
     global $CFG, $DB;
 
-    echo '<B>'.get_string( 'win', 'game').'</B><br>';
+    echo '<span class=\'cryptex_winstring\'>' . get_string( 'win', 'game') . '</span>';
     echo '<br>';
     echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}&forcenew=1\">".
-        get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
+        get_string( 'nextgame', 'game').'</a>';
     echo "<a href=\"{$CFG->wwwroot}/course/view.php?id={$cm->course}\">".get_string( 'finish', 'game').'</a> ';
     echo "<br><br>\r\n";
 }

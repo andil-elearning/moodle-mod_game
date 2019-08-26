@@ -170,9 +170,9 @@ class CryptexDB extends CrossDB {
                 $m = game_substr( $mask, $pos, 1);
 
                 if ($showsolution and $m > '0') {
-                    echo "<td><b><font color=red>".$c."</font></td>";
+                    echo "<td><span class='cryptex_word_found'>".$c."</span></td>";
                 } else if ( $m == '1') {
-                    echo "<td><b><font color=red>".$c."</font></td>";
+                    echo "<td><span class='cryptex_word_found'>".$c."</span></td>";
                 } else {
                     echo "<td>".$c."</td>";
                 }
@@ -300,7 +300,6 @@ class CryptexDB extends CrossDB {
             }
             ksort( $questions);
         }
-
         return $questions;
     }
 
