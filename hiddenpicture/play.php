@@ -139,6 +139,7 @@ function game_hiddenpicture_selectglossaryentry( $game, $attempt) {
 
     $sql = "SELECT ge.id,attachment FROM $table WHERE $select";
     if (($recs = $DB->get_records_sql( $sql)) == false) {
+        $a = new stdClass();
         $a->name = "'".$DB->get_field('glossary', 'name', array( 'id' => $game->glossaryid2))."'";
         print_error( get_string( 'hiddenpicture_nomainquestion', 'game', $a));
         return false;
@@ -237,9 +238,8 @@ function game_hiddenpicture_selectglossaryentry( $game, $attempt) {
  * @param stdClass $hiddenpicture
  * @param boolean $showsolution
  * @param stdClass $context
- * @param stdClass $course
  */
-function game_hiddenpicture_play( $cm, $game, $attempt, $hiddenpicture, $showsolution, $context, $course) {
+function game_hiddenpicture_play( $cm, $game, $attempt, $hiddenpicture, $showsolution, $context) {
     if ($game->toptext != '') {
         echo $game->toptext.'<br>';
     }
@@ -348,27 +348,27 @@ function game_hiddenpicture_showquestion_glossary( $game, $id, $query) {
     // Start the form.
     echo '<br>';
     echo "<form id=\"responseform\" method=\"post\" ".
-        "action=\"{$CFG->wwwroot}/mod/game/attempt.php\" onclick=\"this.autocomplete='off'\">\n";
-    echo "<center><input type=\"submit\" name=\"finishattempt\" ".
-        "value=\"".get_string('hiddenpicture_mainsubmit', 'game')."\"></center>\n";
+        "action=\"{$CFG->wwwroot}/mod/game/attempt.php\" onclick=\"this.autocomplete='off'\">";
+    echo "<center><input type=\"submit\" class=\"hiddenpicture_finishattempt\" name=\"finishattempt\" ".
+        "value=\"".get_string('hiddenpicture_mainsubmit', 'game')."\"></center>";
 
     // Add a hidden field with the queryid.
-    echo '<input type="hidden" name="id" value="' . s($id) . "\" />\n";
+    echo '<input type="hidden" name="id" value="' . s($id) . "\" />";
     echo '<input type="hidden" name="action" value="hiddenpicturecheckg" />';
-    echo '<input type="hidden" name="queryid" value="' . $query->id . "\" />\n";
+    echo '<input type="hidden" name="queryid" value="' . $query->id . "\" />";
 
     // Add a hidden field with glossaryentryid.
-    echo '<input type="hidden" name="glossaryentryid" value="'.$query->glossaryentryid."\" />\n";
+    echo '<input type="hidden" name="glossaryentryid" value="'.$query->glossaryentryid."\" />";
 
     $temp = $game->glossaryid;
     $game->glossaryid = $game->glossaryid2;
-    echo game_show_query( $game, $query, $entry->definition);
+    echo '<span class="hiddenpicture_question">' . game_show_query( $game, $query, $entry->definition) . '</span>';
     $game->glossaryid = $temp;
 
-    echo get_string( 'answer').': ';
+    echo ' ' . get_string( 'answer').': ';
     echo "<input type=\"text\" name=\"answer\" size=30 /><br>";
 
-    echo "</form><br>\n";
+    echo "</form><br>";
 }
 
 /**
@@ -408,7 +408,6 @@ function game_hiddenpicture_check_mainquestion( $cm, $game, &$attempt, &$hiddenp
     }
 
     game_update_queries( $game, $attempt, $query, $correct, $answer);
-
     if ($correct) {
         $hiddenpicture->found = 1;
     } else {
@@ -422,7 +421,7 @@ function game_hiddenpicture_check_mainquestion( $cm, $game, &$attempt, &$hiddenp
     game_updateattempts( $game, $attempt, $score, $correct, $cm, $course);
 
     if ($correct == false) {
-        game_hiddenpicture_play( $id, $game, $attempt, $hiddenpicture, false, $context);
+        game_hiddenpicture_play( $cm, $game, $attempt, $hiddenpicture, false, $context);
         return true;
     }
 
@@ -430,15 +429,15 @@ function game_hiddenpicture_check_mainquestion( $cm, $game, &$attempt, &$hiddenp
     $query = $DB->get_record_select( 'game_queries', "attemptid=$hiddenpicture->id AND mycol=0",
         null, 'id,glossaryentryid,attachment,questiontext');
     game_showpicture( $cm->id, $game, $attempt, $query, '', '', false);
-    echo '<p><br/><font size="5" color="green">'.get_string( 'win', 'game').'</font><BR/><BR/></p>';
+    echo '<p><br/><span class="hiddenpicture_win">'.get_string( 'win', 'game').'</span></p>';
     global $CFG;
 
     echo '<br/>';
 
-    echo "<a href=\"$CFG->wwwroot/mod/game/attempt.php?id={$cm->id}\">";
-    echo get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp;';
+    echo "<a class=\"hiddenpicture_nextgame\" href=\"$CFG->wwwroot/mod/game/attempt.php?id={$cm->id}\">";
+    echo get_string( 'nextgame', 'game').'</a>';
 
-    echo "<a href=\"{$CFG->wwwroot}/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
+    echo "<a class=\"hiddenpicture_finish\" href=\"{$CFG->wwwroot}/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
 
     return false;
 }
@@ -485,10 +484,10 @@ function game_showpicture( $id, $game, $attempt, $query, $cells, $foundcells, $u
     if ($usemap) {
         echo " USEMAP=\"#mapname\" ";
     }
-    echo " BORDER=\"1\">\r\n";
+    echo " BORDER=\"1\">";
 
     if ($usemap) {
-        echo "<MAP NAME=\"mapname\">\r\n";
+        echo "<MAP NAME=\"mapname\">";
         $pos = 0;
         for ($row = 0; $row < $rows; $row++) {
             for ($col = 0; $col < $cols; $col++) {
@@ -498,7 +497,7 @@ function game_showpicture( $id, $game, $attempt, $query, $cells, $foundcells, $u
                 $x2 = $x1 + $width / $cols;
                 $y2 = $y1 + $height / $rows;
                 $q = "a$pos";
-                echo "<AREA SHAPE=\"rect\" COORDS=\"$x1,$y1,$x2,$y2\" HREF=\"#$q\" ALT=\"$pos\">\r\n";
+                echo "<AREA SHAPE=\"rect\" COORDS=\"$x1,$y1,$x2,$y2\" HREF=\"#$q\" ALT=\"$pos\">";
             }
         }
         echo "</MAP>";

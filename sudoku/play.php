@@ -358,8 +358,7 @@ function game_sudoku_showsudoku( $data, $guess, $bshowlegend, $bshowsolution, $o
         return $count;
     }
 
-    echo '<B><br>'.get_string( 'win', 'game').'</B><BR>';
-    echo '<br>';
+    echo '<div class="sudoku_win"' . get_string( 'win', 'game') . '</div>';
     echo "<a href=\"$CFG->wwwroot/mod/game/attempt.php?id={$cm->id}&finishattempt=1\">".
         get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
     echo "<a href=\"$CFG->wwwroot/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
@@ -571,22 +570,24 @@ function game_sudoku_showquestions_glossary( $id, $game, $attempt, $sudoku, $off
         $query = new StdClass;
         $query->glossaryid = $game->glossaryid;
         $query->glossaryentryid = $entry->id;
-        $s = '<b>A'.$ofs.'.</b> '.game_show_query( $game, $query, $entry->definition, 0).'<br>';
+        $s = '<div class= "questionline"> <span class="questionnumber"> A'.$ofs.'.</span> '.game_show_query( $game, $query, $entry->definition, 0) . "</div>";
+        $s .= '<div class="answerline">';
         if ($showsolution) {
-            $s .= get_string( 'answer').': ';
+            $s .= '<span class="answer">' . get_string( 'answer').': </span>';
             $s .= "<input type=\"text\" name=\"resp{$entry->id}\" value=\"$entry->concept\"size=30 /><br>";
         } else if ($onlyshow === false) {
             $s .= get_string( 'answer').': ';
             $s .= "<input type=\"text\" name=\"resp{$entry->id}\" size=30 /><br>";
         }
-        echo $s."<hr>\r\n";
+        $s .= '</div>';
+        echo $s."<hr>";
     }
 
     echo "</div>";
 
     // Finish the form.
     if ($hasquestions) {
-        echo "<center><input type=\"submit\" name=\"submit\" value=\"".get_string('sudoku_submit', 'game')."\"></center>\n";
+        echo "<input class=\"submitgame\" type=\"submit\" name=\"submit\" value=\"".get_string('sudoku_submit', 'game')."\">";
     }
 
     echo "</form>\n";
@@ -601,7 +602,7 @@ function game_sudoku_showquestions_glossary( $id, $game, $attempt, $sudoku, $off
  * @param stdClass $sudoku
  */
 function game_sudoku_showquestion_onfinish( $id, $game, $attempt, $sudoku) {
-    echo '<B>'.get_string( 'win', 'game').'</B><BR>';
+    echo '<div class="sudoku_win"' . get_string( 'win', 'game') . '</div>';
     echo '<br>';
     echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id=$id\">".
         get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
