@@ -645,7 +645,6 @@ function game_sudoku_check_questions( $cm, $game, $attempt, $sudoku, $finishatte
 
         $select = "attemptid=$attempt->id";
         $select .= " AND questionid=$question->id";
-
         if (($query->id = $DB->get_field_select( 'game_queries', 'id', $select)) == 0) {
             die( "problem game_sudoku_check_questions (select=$select)");
             continue;

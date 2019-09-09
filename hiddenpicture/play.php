@@ -345,7 +345,7 @@ function game_hiddenpicture_showquestions_glossary( $id, $game, $attempt, $hidde
     // Add a hidden field with the quiz id.
     echo '<div>';
     echo '<input type="hidden" name="id" value="' . s($id) . "\" />\n";
-    echo '<input type="hidden" name="action" value="sudokucheckg" />';
+    echo '<input type="hidden" name="action" value="hiddenpicturecheckg" />';
 
     // Print all the questions.
 
@@ -634,12 +634,11 @@ function game_hiddenpicture_showhiddenpicture( $id, $game, $attempt, $hiddenpict
     echo "<input type=\"submit\" name=\"finishattempt\" value=\"".
     get_string('hiddenpicture_finishattemptbutton', 'game')."\">";
 
-     // Add a hidden field with the quiz id.
-     echo '<div>';
-     echo '<input type="hidden" name="id" value="' . s($id) . "\" />";
-     echo '<input type="hidden" name="action" value="hiddenpicturecheck" />';
-
+    // Add a hidden field with the quiz id.
+    echo '<input type="hidden" name="id" value="' . s($id) . "\" />";
+    echo '<input type="hidden" name="action" value="hiddenpicturecheck" />';
     echo "</form>";
+
     // Grade.
     echo "<span class='str_grade'/>".get_string( 'grade', 'game').' : '.round( $attempt->score * 100).' % </span>';
 
@@ -664,7 +663,7 @@ function game_hiddenpicture_showquestion_glossary( $game, $id, $query) {
 
     // Start the form.
     echo '<br>';
-    echo "<form id=\"responseform\" method=\"post\" ".
+    echo "<form method=\"post\" ".
         "action=\"{$CFG->wwwroot}/mod/game/attempt.php\" onclick=\"this.autocomplete='off'\">";
     echo "<input type=\"submit\" class=\"hiddenpicture_finishattempt\" name=\"finishattempt\" ".
         "value=\"".get_string('hiddenpicture_mainsubmit', 'game')."\">";
@@ -676,7 +675,7 @@ function game_hiddenpicture_showquestion_glossary( $game, $id, $query) {
 
     // Add a hidden field with glossaryentryid.
     echo '<input type="hidden" name="glossaryentryid" value="'.$query->glossaryentryid."\" />";
-    echo '</form>';
+
     $temp = $game->glossaryid;
     $game->glossaryid = $game->glossaryid2;
     echo '<span class="hiddenpicture_question">' . game_show_query( $game, $query, $entry->definition) . '</span>';
@@ -818,4 +817,59 @@ function game_showpicture( $id, $game, $attempt, $query, $cells, $foundcells, $u
         }
         echo "</MAP>";
     }
+}
+/**
+ * Check glossary entries
+ *
+ * @param stdClass $cm
+ * @param stdClass $game
+ * @param stdClass $attempt
+ * @param stdClass $hiddenpicture
+ * @param boolean $finishattempt
+ * @param stdClass $course
+ */
+function game_hiddenpicture_check_glossaryentries( $cm, $game, $attempt, $hiddenpicture, $finishattempt, $course) {
+    global $DB;
+
+    $responses = data_submitted();
+
+    // This function returns offsetentries, numbers, correctquestions.
+    $offsetentries = game_sudoku_compute_offsetquestions( $game->sourcemodule, $attempt, $numbers, $correctquestions);
+
+    $entrieslist = game_sudoku_getquestionlist( $offsetentries );
+
+    // Load the glossary entries.
+    if (!($entries = $DB->get_records_select( 'glossary_entries', "id IN ($entrieslist)"))) {
+        print_error( get_string('noglossaryentriesfound', 'game'));
+    }
+    foreach ($entries as $entry) {
+        $answerundefined = optional_param('resp'.$entry->id, 'undefined', PARAM_TEXT);
+        if ($answerundefined == 'undefined') {
+            continue;
+        }
+        $answer = optional_param('resp'.$entry->id, '', PARAM_TEXT);
+        if ($answer == '') {
+            continue;
+        }
+        if (game_upper( $entry->concept) != game_upper( $answer)) {
+            continue;
+        }
+        // Correct answer.
+        $select = "attemptid=$attempt->id";
+        $select .= " AND glossaryentryid=$entry->id AND mycol>0";
+        // Check the student guesses not source glossary entry.
+        $select .= " AND questiontext is null";
+
+        $query = new stdClass();
+        if (($query->id = $DB->get_field_select( 'game_queries', 'id', $select)) == 0) {
+            echo "not found $select<br>";
+            continue;
+        }
+
+        game_update_queries( $game, $attempt, $query, 1, $answer);
+    }
+
+    game_sudoku_check_last( $cm, $game, $attempt, $hiddenpicture, $finishattempt, $course);
+
+    return true;
 }
