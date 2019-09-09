@@ -560,7 +560,6 @@ function game_hiddenpicture_showquestions_quiz( $id, $game, $attempt, $hiddenpic
 
         $number = "<span class='questionnumber'>A$ofs</span>";
         echo $number;
-        // print_object(game_print_question( $game, $question, $context););
         game_print_question( $game, $question, $context);
     }
 
