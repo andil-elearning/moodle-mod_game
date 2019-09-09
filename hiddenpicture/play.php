@@ -245,7 +245,7 @@ function game_hiddenpicture_play( $cm, $game, $attempt, $hiddenpicture, $showsol
     }
 
     // Show picture.
-    $offsetquestions = game_sudoku_compute_offsetquestions( $game->sourcemodule, $attempt, $numbers, $correctquestions);
+    $offsetquestions = game_hiddenpicture_compute_offsetquestions( $game->sourcemodule, $attempt, $numbers, $correctquestions);
     unset( $offsetquestions[ 0]);
 
     game_hiddenpicture_showhiddenpicture( $cm->id, $game, $attempt, $hiddenpicture, $showsolution,
@@ -258,11 +258,11 @@ function game_hiddenpicture_play( $cm, $game, $attempt, $hiddenpicture, $showsol
     switch ($game->sourcemodule) {
         case 'quiz':
         case 'question':
-            game_sudoku_showquestions_quiz( $cm->id, $game, $attempt, $hiddenpicture, $offsetquestions,
+            game_hiddenpicture_showquestions_quiz( $cm->id, $game, $attempt, $hiddenpicture, $offsetquestions,
                 $numbers, $correctquestions, $onlyshow, $showsolution, $context);
             break;
         case 'glossary':
-            game_sudoku_showquestions_glossary( $cm->id, $game, $attempt, $hiddenpicture,
+            game_hiddenpicture_showquestions_glossary( $cm->id, $game, $attempt, $hiddenpicture,
                 $offsetquestions, $numbers, $correctquestions, $onlyshow, $showsolution);
             break;
     }
@@ -271,6 +271,310 @@ function game_hiddenpicture_play( $cm, $game, $attempt, $hiddenpicture, $showsol
         echo '<br><br>'.$game->bottomtext;
     }
 }
+/**
+ * Get glossary entries
+ *
+ * @param stdClass $game
+ * @param int $offsetentries
+ * @param string $entrylist
+ * @param int $numbers
+ */
+function game_hiddenpicture_getglossaryentries( $game, $offsetentries, &$entrylist, $numbers) {
+    global $DB;
+
+    $entrylist = implode( ',', $offsetentries);
+
+    if ($entrylist == '') {
+        print_error( get_string( 'hiddenpicture_noentriesfound', 'game'));
+    }
+
+    // Load the questions.
+    if (!$entries = $DB->get_records_select( 'glossary_entries', "id IN ($entrylist)")) {
+        print_error( get_string('hiddenpicture_noentriesfound', 'game'));
+    }
+
+    return $entries;
+}
+/**
+ * Show the hiddenpicture and glossaryentries.
+ *
+ * @param int $id
+ * @param string $game
+ * @param stdClass $attempt
+ * @param stdClass $hiddenpicture
+ * @param int $offsetentries
+ * @param int $numbers
+ * @param int $correctentries
+ * @param boolean $onlyshow
+ * @param boolean $showsolution
+ */
+function game_hiddenpicture_showquestions_glossary( $id, $game, $attempt, $hiddenpicture, $offsetentries, $numbers,
+ $correctentries, $onlyshow, $showsolution) {
+    global $CFG;
+
+    $entries = game_hiddenpicture_getglossaryentries( $game, $offsetentries, $questionlist, $numbers);
+
+    // I will sort with the number of each question.
+    $entries2 = array();
+    foreach ($entries as $q) {
+        $ofs = $numbers[ $q->id];
+        $entries2[ $ofs] = $q;
+    }
+    ksort( $entries2);
+
+    if (count( $entries2) == 0) {
+        game_hiddenpicture_showquestion_onfinish( $id, $game, $attempt, $hiddenpicture);
+        return;
+    }
+
+    // Start the form.
+    echo "<br><form id=\"responseform\" method=\"post\" ".
+        "action=\"{$CFG->wwwroot}/mod/game/attempt.php\" onclick=\"this.autocomplete='off'\">\n";
+
+    if ($onlyshow) {
+        $hasquestions = false;
+    } else {
+        $hasquestions = ( count($correctentries) < count( $entries2));
+    }
+
+    if ($hasquestions) {
+        echo "<input type=\"submit\" name=\"submit\" value=\"".get_string('hiddenpicture_submit', 'game')."\">";
+    }
+
+    // Add a hidden field with the quiz id.
+    echo '<div>';
+    echo '<input type="hidden" name="id" value="' . s($id) . "\" />\n";
+    echo '<input type="hidden" name="action" value="hiddenpicturecheckg" />';
+
+    // Print all the questions.
+
+    // Add a hidden field with questionids.
+    echo '<input type="hidden" name="questionids" value="'.$questionlist."\" />\n";
+
+    $number = 0;
+    foreach ($entries2 as $entry) {
+        $ofs = $numbers[ $entry->id];
+        if (array_key_exists( $ofs, $correctentries)) {
+            continue;   // I don't show the correct answers.
+        }
+
+        $query = new StdClass;
+        $query->glossaryid = $game->glossaryid;
+        $query->glossaryentryid = $entry->id;
+        $s = '<div class= "questionline"> <span class="questionnumber"> A'.$ofs.'.</span> '.game_show_query( $game, $query, $entry->definition, 0) . "</div>";
+        $s .= '<div class="answerline">';
+        if ($showsolution) {
+            $s .= '<span class="answer">' . get_string( 'answer').': </span>';
+            $s .= "<input type=\"text\" name=\"resp{$entry->id}\" value=\"$entry->concept\"size=30 /><br>";
+        } else if ($onlyshow === false) {
+            $s .= get_string( 'answer').': ';
+            $s .= "<input type=\"text\" name=\"resp{$entry->id}\" size=30 /><br>";
+        }
+        $s .= '</div>';
+        echo $s."<hr>";
+    }
+
+    echo "</div>";
+
+    // Finish the form.
+    if ($hasquestions) {
+        echo "<input class=\"submitgame\" type=\"submit\" name=\"submit\" value=\"".get_string('hiddenpicture_submit', 'game')."\">";
+    }
+
+    echo "</form>\n";
+}
+/**
+ * Returns a map with an offset and id of each question.
+ *
+ * @param string $sourcemodule
+ * @param stdClass $attempt
+ * @param int $numbers
+ * @param int $correctquestions
+ */
+function game_hiddenpicture_compute_offsetquestions( $sourcemodule, $attempt, &$numbers, &$correctquestions) {
+    global $CFG, $DB;
+
+    $offsetquestions = array();
+    if ($attempt == null) {
+        return $offsetquestions;
+    }
+    $select = "attemptid = $attempt->id";
+
+    $fields = 'id, mycol, score';
+    switch( $sourcemodule)
+    {
+        case 'quiz':
+        case 'question':
+            $fields .= ',questionid as id2';
+            break;
+        case 'glossary':
+            $fields .= ',glossaryentryid as id2';
+            break;
+    }
+    if (($recs = $DB->get_records_select( 'game_queries', $select, null, '', $fields)) == false) {
+        $DB->execute( "DELETE FROM {$CFG->prefix}game_hiddenpicture WHERE id={$attempt->id}");
+        print_error( 'There are no questions '.$attempt->id);
+    }
+
+    $numbers = array();
+    $correctquestions = array();
+    foreach ($recs as $rec) {
+        $offsetquestions[ $rec->mycol] = $rec->id2;
+        $numbers[ $rec->id2] = $rec->mycol;
+        if ( $rec->score == 1) {
+            $correctquestions[ $rec->mycol] = 1;
+        }
+    }
+
+    ksort( $offsetquestions);
+
+    return $offsetquestions;
+}
+
+
+/**
+ * Get question list
+ *
+ * @param int $offsetquestions
+ */
+function game_hiddenpicture_getquestionlist( $offsetquestions) {
+    $questionlist = '';
+    foreach ($offsetquestions as $q) {
+        if ($q != 0) {
+            $questionlist .= ','.$q;
+        }
+    }
+    $questionlist = substr( $questionlist, 1);
+
+    if ($questionlist == '') {
+        print_error( get_string('no_questions', 'game'));
+    }
+
+    return $questionlist;
+}
+
+/**
+ * get questions for hiddenpicture
+ *
+ * @param string $questionlist
+ */
+function game_hiddenpicture_getquestions( $questionlist) {
+    global $CFG, $DB;
+
+    // Load the questions.
+    $sql = "SELECT q.*,qmo.single ".
+        " FROM {$CFG->prefix}question ".
+            " LEFT JOIN {$CFG->prefix}qtype_multichoice_options qmo ON q.id=qmo.questionid AND q.qtype='multichoice' ".
+        " WHERE q.id IN ($questionlist)";
+    if (!$questions = $DB->get_records_select( 'question', "id IN ($questionlist)")) {
+        print_error( get_string( 'no_questions', 'game'));
+    }
+
+    // Load the question type specific information.
+    if (!get_question_options($questions)) {
+        print_error('Could not load question options');
+    }
+
+    return $questions;
+}
+
+/**
+ * Show question onfinish
+ *
+ * @param int $id
+ * @param stdClass $game
+ * @param stdClass $attempt
+ * @param stdClass $hiddenpicture
+ */
+function game_hiddenpicture_showquestion_onfinish( $id, $game, $attempt, $hiddenpicture) {
+    global $CFG;
+    echo '<div class="hiddenpicture_win"' . get_string( 'win', 'game') . '</div>';
+    echo '<br>';
+    echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id=$id\">".
+        get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
+    echo "<a href=\"{$CFG->wwwroot}?id=$id\">".get_string( 'finish', 'game').'</a> ';
+}
+
+/**
+ * Plays the game hiddenpicture
+ *
+ * @param int $id
+ * @param stdClass $game
+ * @param stdClass $attempt
+ * @param stdClass $hiddenpicture
+ * @param int $offsetquestions
+ * @param string $numbers
+ * @param int $correctquestions
+ * @param boolean $onlyshow
+ * @param boolean $showsolution
+ * @param stdClass $context
+ */
+function game_hiddenpicture_showquestions_quiz( $id, $game, $attempt, $hiddenpicture, $offsetquestions, $numbers,
+     $correctquestions, $onlyshow, $showsolution, $context) {
+    global $CFG;
+
+    $questionlist = game_hiddenpicture_getquestionlist( $offsetquestions);
+    $questions = game_hiddenpicture_getquestions( $questionlist);
+
+    // I will sort with the number of each question.
+    $questions2 = array();
+    foreach ($questions as $q) {
+        $ofs = $numbers[ $q->id];
+        $questions2[ $ofs] = $q;
+    }
+    ksort( $questions2);
+
+    if (count( $questions2) == 0) {
+        game_hiddenpicture_showquestion_onfinish( $id, $game, $attempt, $hiddenpicture);
+        return;
+    }
+
+    $number = 0;
+    $found = false;
+    foreach ($questions2 as $question) {
+        $ofs = $numbers[ $question->id];
+        if (array_key_exists( $ofs, $correctquestions)) {
+            continue;   // I don't show the correct answers.
+        }
+
+        if ( $found == false) {
+            $found = true;
+            // Start the form.
+            echo "<form id=\"responseform\" method=\"post\" ".
+                "action=\"{$CFG->wwwroot}/mod/game/attempt.php\" onclick=\"this.autocomplete='off'\">\n";
+            if (($onlyshow === false) and ($showsolution === false)) {
+                echo "<input type=\"submit\" name=\"submit\" value=\"".get_string('hiddenpicture_submit', 'game')."\">";
+            }
+
+            // Add a hidden field with the quiz id.
+            echo '<div>';
+            echo '<input type="hidden" name="id" value="' . s($id) . "\" />\n";
+            echo '<input type="hidden" name="action" value="hiddenpicturecheck" />';
+
+            // Print all the questions.
+
+            // Add a hidden field with questionids.
+            echo '<input type="hidden" name="questionids" value="'.$questionlist."\" />\n";
+        }
+
+        $number = "<span class='questionnumber'>A$ofs</span>";
+        echo $number;
+        game_print_question( $game, $question, $context);
+    }
+
+    if ($found) {
+        echo "</div>";
+
+        // Finish the form.
+        echo '</div>';
+        if (($onlyshow === false) and ($showsolution === false)) {
+            echo "<input type=\"submit\" name=\"submit\" value=\"".get_string('hiddenpicture_submit', 'game')."\">";
+        }
+
+        echo "</form>\n";
+    }
+}
+
 
 /**
  * "Hidden picture" compute score
@@ -323,8 +627,10 @@ function game_hiddenpicture_showhiddenpicture( $id, $game, $attempt, $hiddenpict
     $query = $DB->get_record_select( 'game_queries', "attemptid=$hiddenpicture->id AND mycol=0",
         null, 'id,glossaryentryid,attachment,questiontext');
 
+    echo "<input type=\"submit\" name=\"finishattempt\" value=\"".
+    get_string('hiddenpicture_finishattemptbutton', 'game')."\">";
     // Grade.
-    echo "<br/>".get_string( 'grade', 'game').' : '.round( $attempt->score * 100).' %';
+    echo "<span class='str_grade'/>".get_string( 'grade', 'game').' : '.round( $attempt->score * 100).' % </span>';
 
     game_hiddenpicture_showquestion_glossary( $game, $id, $query);
 
@@ -349,8 +655,8 @@ function game_hiddenpicture_showquestion_glossary( $game, $id, $query) {
     echo '<br>';
     echo "<form id=\"responseform\" method=\"post\" ".
         "action=\"{$CFG->wwwroot}/mod/game/attempt.php\" onclick=\"this.autocomplete='off'\">";
-    echo "<center><input type=\"submit\" class=\"hiddenpicture_finishattempt\" name=\"finishattempt\" ".
-        "value=\"".get_string('hiddenpicture_mainsubmit', 'game')."\"></center>";
+    echo "<input type=\"submit\" class=\"hiddenpicture_finishattempt\" name=\"finishattempt\" ".
+        "value=\"".get_string('hiddenpicture_mainsubmit', 'game')."\">";
 
     // Add a hidden field with the queryid.
     echo '<input type="hidden" name="id" value="' . s($id) . "\" />";

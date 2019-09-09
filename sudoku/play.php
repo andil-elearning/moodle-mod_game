@@ -422,7 +422,7 @@ function game_sudoku_getglossaryentries( $game, $offsetentries, &$entrylist, $nu
 }
 
 /**
- * Plays the game hangman
+ * Plays the game sudoku
  *
  * @param int $id
  * @param stdClass $game

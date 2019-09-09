@@ -1026,11 +1026,11 @@ if ($game->param3 == 2) {
     game_cross_show_welcome( $game);
 }
 ?>
-<div id="worderror" style="color:#c00000;font-weight:bold;display:none;margin-top:1em;"></div>
+<div id="worderror"></div>
 
 <table border="0" cellspacing="0" cellpadding="0" width="100%" style="margin-top:1em;"><tr>
 <td align="right">
-<button id="okbutton" type="button" class="button" onclick="OKClick();" style="font-weight: bold;">OK</button> &nbsp;
+<button id="okbutton" type="button" class="button" onclick="OKClick();">OK</button> &nbsp;
 <button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
 </td></tr></table>
 
@@ -1056,17 +1056,17 @@ function game_cross_show_welcome1() {
 <div style="margin-top:1em;"><input id="wordentry" type="text" size="24"
  style="font-weight: bold; text-transform:uppercase;"
  onkeypress="WordEntryKeyPress(event)" onchange="WordEntryKeyPress(event)" autocomplete="off"></div>
-<div id="worderror" style="color:#c00000;font-weight:bold;display:none;margin-top:1em;"></div>
+<div id="worderror"></div>
 
 <table border="0" cellspacing="0" cellpadding="0" width="100%" style="margin-top:1em;"><tr>
 <td align="right">
-<button id="okbutton" type="button" class="button" onclick="OKClick();" style="font-weight: bold;">OK</button> &nbsp;
+<button id="okbutton" type="button" class="button" onclick="OKClick();">OK</button> &nbsp;
 <button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
 </td></tr></table>
 
 <div id="answerbox2" class="crossword-answerboxstyle" style="display:none;">
-<h3 id="wordlabel" style="text-transform:uppercase;margin:0;"> </h3>
-<div id="wordinfo" style="font-size:8pt;color:#808080"> </div>
+<h3 id="wordlabel"> </h3>
+<div id="wordinfo"> </div>
 <div id="wordclue" class="crossword-cluebox"> </div>
 </div>
 
