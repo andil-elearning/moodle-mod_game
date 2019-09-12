@@ -73,13 +73,13 @@ function create_image( $id, $attemptid, $foundcells, $cells, $filehash, $cols, $
     $imghandle = imagecreatefromstring($file->get_content());
 
     $mime = $image[ 'mimetype'];
-
+    $filenamenumbers = $CFG->dirroot . '/' . $filenamenumbers;
     $imgnumbers = imagecreatefrompng( $filenamenumbers);
     $sizenumbers = getimagesize ($filenamenumbers);
 
     header("Content-type: $mime");
 
-    $color = imagecolorallocate( $imghandle, 100, 100, 100);
+    $color = imagecolorallocate( $imghandle, 200, 100, 500);
 
     $width = $image[ 'width'];
     $height = $image[ 'height'];

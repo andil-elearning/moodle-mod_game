@@ -164,7 +164,7 @@ function game_do_attempt( $game, $action, $course, $context, $cm) {
             break;
         case 'hiddenpicturecheck':     // The student tries to answer a question.
             $attempt = game_getattempt( $game, $detail);
-            game_sudoku_check_questions( $cm, $game, $attempt, $detail, $finishattempt, $course, $context);
+            game_hiddenpicture_check_questions( $cm, $game, $attempt, $detail, $finishattempt, $course, $context);
             $continue = true;
             break;
         case 'sudokucheckg':    // The student tries to guess a glossaryenry.

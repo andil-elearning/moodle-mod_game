@@ -311,8 +311,7 @@ function game_hiddenpicture_getglossaryentries( $game, $offsetentries, &$entryli
  */
 function game_hiddenpicture_showquestions_glossary( $id, $game, $attempt, $hiddenpicture, $offsetentries, $numbers,
  $correctentries, $onlyshow, $showsolution) {
-    global $CFG;
-
+    global $CFG, $DB;
     $entries = game_hiddenpicture_getglossaryentries( $game, $offsetentries, $questionlist, $numbers);
 
     // I will sort with the number of each question.
@@ -346,6 +345,14 @@ function game_hiddenpicture_showquestions_glossary( $id, $game, $attempt, $hidde
     echo '<div>';
     echo '<input type="hidden" name="id" value="' . s($id) . "\" />\n";
     echo '<input type="hidden" name="action" value="hiddenpicturecheckg" />';
+
+    $query = $DB->get_record_select( 'game_queries', "attemptid=$hiddenpicture->id AND mycol=0",
+    null, 'id,glossaryentryid,attachment,questiontext');
+
+    echo '<input type="hidden" name="queryid" value="' . $query->id . "\" />";
+
+    // Add a hidden field with glossaryentryid.
+    echo '<input type="hidden" name="glossaryentryid" value="'.$query->glossaryentryid."\" />";
 
     // Print all the questions.
 
@@ -770,7 +777,7 @@ function game_hiddenpicture_check_mainquestion( $cm, $game, &$attempt, &$hiddenp
 function game_showpicture( $id, $game, $attempt, $query, $cells, $foundcells, $usemap) {
     global $CFG;
 
-    $filenamenumbers = str_replace( "\\", '/', $CFG->dirroot)."/mod/game/hiddenpicture/numbers.png";
+    $filenamenumbers = str_replace( "\\", '/', new moodle_url('mod/game/hiddenpicture/numbers.png'));
     if ($usemap) {
         $cols = $game->param1;
         $rows = $game->param2;
@@ -833,9 +840,9 @@ function game_hiddenpicture_check_glossaryentries( $cm, $game, $attempt, $hidden
     $responses = data_submitted();
 
     // This function returns offsetentries, numbers, correctquestions.
-    $offsetentries = game_sudoku_compute_offsetquestions( $game->sourcemodule, $attempt, $numbers, $correctquestions);
+    $offsetentries = game_hiddenpicture_compute_offsetquestions( $game->sourcemodule, $attempt, $numbers, $correctquestions);
 
-    $entrieslist = game_sudoku_getquestionlist( $offsetentries );
+    $entrieslist = game_hiddenpicture_getquestionlist( $offsetentries );
 
     // Load the glossary entries.
     if (!($entries = $DB->get_records_select( 'glossary_entries', "id IN ($entrieslist)"))) {
@@ -868,7 +875,79 @@ function game_hiddenpicture_check_glossaryentries( $cm, $game, $attempt, $hidden
         game_update_queries( $game, $attempt, $query, 1, $answer);
     }
 
-    game_sudoku_check_last( $cm, $game, $attempt, $hiddenpicture, $finishattempt, $course);
+    game_hiddenpicture_check_last( $cm, $game, $attempt, $hiddenpicture, $finishattempt, $course);
 
     return true;
+}
+/**
+ * This is the last function after submiting the answers.
+ *
+ * @param stdClass $cm
+ * @param stdClass $game
+ * @param stdClass $attempt
+ * @param stdClass $hiddenpicture
+ * @param boolean $finishattempt
+ * @param stdClass $course
+ */
+function game_hiddenpicture_check_last( $cm, $game, $attempt, $hiddenpicture, $finishattempt, $course) {
+    global $CFG, $DB;
+
+    $correct = $DB->get_field_select( 'game_queries', 'COUNT(*) AS c', "attemptid=$attempt->id AND score > 0.9");
+    $all = $DB->get_field_select( 'game_queries', 'COUNT(*) AS c', "attemptid=$attempt->id");
+
+    if ($all) {
+        $score = $correct / $all;
+    } else {
+        $score = 0;
+    }
+    game_updateattempts( $game, $attempt, $score, $finishattempt, $cm, $course);
+}
+
+/**
+ * Checks questions
+ *
+ * @param stdClass $cm
+ * @param stdClass $game
+ * @param stdClass $attempt
+ * @param stdClass $hiddenpicture
+ * @param boolean $finishattempt
+ * @param stdClass $course
+ * @param stdClass $context
+ */
+function game_hiddenpicture_check_questions( $cm, $game, $attempt, $hiddenpicture, $finishattempt, $course, $context) {
+    global $DB;
+
+    $responses = data_submitted();
+
+    $offsetquestions = game_hiddenpicture_compute_offsetquestions( $game->sourcemodule, $attempt, $numbers, $correctquestions);
+
+    $questionlist = game_hiddenpicture_getquestionlist( $offsetquestions);
+
+    $questions = game_hiddenpicture_getquestions( $questionlist);
+
+    foreach ($questions as $question) {
+        $query = new stdClass();
+
+        $select = "attemptid=$attempt->id";
+        $select .= " AND questionid=$question->id";
+        if (($query->id = $DB->get_field_select( 'game_queries', 'id', $select)) == 0) {
+            die( "problem game_hiddenpicture_check_questions (select=$select)");
+            continue;
+        }
+
+        $grade = game_grade_responses( $question, $responses, 100, $answertext, $answered);
+        if ($answered == false) {
+            continue;
+        }
+        if ($grade < 99) {
+            // Wrong answer.
+            game_update_queries( $game, $attempt, $query, $grade / 100, $answertext);
+            continue;
+        }
+
+        // Correct answer.
+        game_update_queries( $game, $attempt, $query, 1, $answertext);
+    }
+
+    game_hiddenpicture_check_last( $cm, $game, $attempt, $hiddenpicture, $finishattempt, $course);
 }
