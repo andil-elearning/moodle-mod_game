@@ -190,8 +190,8 @@ function game_cross_play( $cm, $game, $attempt, $crossrec, $g, $onlyshow, $shows
             echo '<div class="crossword-win">'.get_string( 'win', 'game').'</div>';
         }
         if (game_can_start_new_attempt( $game)) {
-            echo "<div class=\"crossword-newgame\"> <a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}&forcenew=1\"> </div>".
-                get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
+            echo "<div class=\"crossword-newgame\"> <a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}&forcenew=1\">" .
+                get_string( 'nextgame', 'game').'</a> </div>';
         }
     } else if ($info != '') {
         if ($print === false) {
@@ -701,7 +701,7 @@ function CheckServerClick( endofgame) {
     if ($onlyshow == false) {
         global $CFG;
         $params = 'id='.$cm->id.'&action=crosscheck&g=';
-        echo "window.location = \"{$CFG->wwwroot}/mod/game/attempt.php?$params\"+ sData;\r\n";
+        echo "window.location = \"{$CFG->wwwroot}/mod/game/attempt.php?$params\"+ sData;";
     }
     ?>
 }
@@ -906,7 +906,7 @@ if ($game->param3 == 1) {
 
 <?php
 if ($onlyshow == false) {
-    echo '<div>';
+    echo '<div class="crossword-buttonlist"> ';
 
     if (!$done) {
         echo '<button id="checkbutton" type="button" onclick="CheckServerClick( 0);" style="display: none;">'.
@@ -914,17 +914,17 @@ if ($onlyshow == false) {
         echo '</button>';
     }
 
-    echo ' &nbsp;&nbsp;&nbsp;&nbsp;<button id="finishattemptbutton" '.
+    echo '<button id="finishattemptbutton" class="endgamebutton" '.
     ' type="button" onclick="CheckServerClick( 1);" style="display: none;">'.
     get_string( 'cross_endofgamebutton', 'game');
     echo '</button>';
     if ($game->param5 == 1 or $game->param5 == null) {
-        echo ' &nbsp;&nbsp;&nbsp;&nbsp;<button id="printbutton" type="button" '.
+        echo '<button id="printbutton" type="button" '.
         ' onclick="OnPrint( 0);" style="display: none;">'.get_string( 'print', 'game');
         echo '</button>';
     }
 
-    echo "</div>\r\n";
+    echo "</div>";
 }
 
 if ($showhtmlsolutions or $showhtmlprintbutton) {
@@ -1028,11 +1028,8 @@ if ($game->param3 == 2) {
 ?>
 <div id="worderror"></div>
 
-<table border="0" cellspacing="0" cellpadding="0" width="100%" style="margin-top:1em;"><tr>
-<td align="right">
-<button id="okbutton" type="button" class="button" onclick="OKClick();">OK</button> &nbsp;
+<button id="okbutton" type="button" class="button" onclick="OKClick();">OK</button>
 <button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
-</td></tr></table>
 
 </div>
 
@@ -1058,11 +1055,9 @@ function game_cross_show_welcome1() {
  onkeypress="WordEntryKeyPress(event)" onchange="WordEntryKeyPress(event)" autocomplete="off"></div>
 <div id="worderror"></div>
 
-<table border="0" cellspacing="0" cellpadding="0" width="100%" style="margin-top:1em;"><tr>
-<td align="right">
-<button id="okbutton" type="button" class="button" onclick="OKClick();">OK</button> &nbsp;
+
+<button id="okbutton" type="button" class="button" onclick="OKClick();">OK</button>
 <button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
-</td></tr></table>
 
 <div id="answerbox2" class="crossword-answerboxstyle" style="display:none;">
 <h3 id="wordlabel"> </h3>

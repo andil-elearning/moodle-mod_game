@@ -188,15 +188,15 @@ class CrossDB extends Cross {
      */
     public function game_cross_computecheck( $correctletters,  $wrongletters, $restletters, $game,
         $attempt, &$done, $onlyshow, $showsolution, $finishattempt, $course, $cm) {
-
         $ret = '';
 
         $and = get_string( 'and', 'game');
 
         $a = array();
         if ($correctletters) {
+            $ret .= '<span class="crossword-foundsentence">';
             $a[] = $correctletters.' '.
-                ( $correctletters > 1 ? get_string( 'cross_corrects', 'game') : get_string( 'cross_correct', 'game'));
+                ( $correctletters > 1 ? get_string( 'cross_corrects', 'game') : get_string( 'cross_correct', 'game')) . '</span>';
         }
         if ($wrongletters) {
             $a[] = '<b>'.$wrongletters.' '.
@@ -204,13 +204,12 @@ class CrossDB extends Cross {
         }
 
         if ($correctletters > 1 or $wrongletters > 1) {
-            $ret = get_string( 'cross_found_many', 'game');
+            $ret .= get_string( 'cross_found_many', 'game');
         } else if ( count( $a)) {
-            $ret = get_string( 'cross_found_one', 'game');
+            $ret .= get_string( 'cross_found_one', 'game');
         } else {
-            $ret = '';
+            $ret .= '';
         }
-
         $i = 0;
         foreach ($a as $msg) {
             $i++;
@@ -223,6 +222,7 @@ class CrossDB extends Cross {
                 $ret .= ', '.$msg;
             }
         }
+        $ret .= '</span>';
 
         $done = ( $restletters == 0 ? true : false);
 

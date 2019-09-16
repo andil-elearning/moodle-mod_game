@@ -298,7 +298,7 @@ function game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm,
 <?php
 
 if ($showhtmlprintbutton && !$finished) {
-    echo '<br><button id="finishattemptbutton" type="button" onclick="OnEndGame();" >'.get_string( 'finish', 'game');
+    echo '<br><button class="endgamebutton" id="finishattemptbutton" type="button" onclick="OnEndGame();" >'.get_string( 'finish', 'game');
     echo '</button>';
     echo '<button id="printbutton" type="button" onclick="OnPrint();" >'.get_string( 'print', 'game');
     echo '</button><br>';
@@ -420,6 +420,6 @@ function game_cryptex_onfinished( $cm, $game, $attempt, $cryptexrec, $course) {
     echo '<br>';
     echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}&forcenew=1\">".
         get_string( 'nextgame', 'game').'</a>';
-    echo "<a href=\"{$CFG->wwwroot}/course/view.php?id={$cm->course}\">".get_string( 'finish', 'game').'</a> ';
+    echo "<a class='endgamebutton' href=\"{$CFG->wwwroot}/course/view.php?id={$cm->course}\">".get_string( 'finish', 'game').'</a> ';
     echo "<br><br>\r\n";
 }

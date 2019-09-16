@@ -691,5 +691,5 @@ function game_millionaire_onquit( $cm, $game, $attempt, $query, $course) {
 
     echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}\">".
         get_string( 'nextgame', 'game').'</a>     ';
-    echo "<a href=\"{$CFG->wwwroot}/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
+    echo "<a class='endgamebutton' href=\"{$CFG->wwwroot}/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
 }

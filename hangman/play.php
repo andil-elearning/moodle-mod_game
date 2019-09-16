@@ -569,8 +569,8 @@ function hangman_onincorrect( $cm, $wordline, $word, $game, $attempt, $hangman, 
     if ( $onlyshow or $showsolution) {
         return;
     }
-
-    echo '<span class="hangman-loose">'.get_string( 'hangman_loose', 'game').'</span>';
+    echo '<div class="hangman-loose">';
+    echo '<span>'.get_string( 'hangman_loose', 'game').'</span>';
 
     if ($game->param6) {
         // Show the correct answer.
@@ -579,8 +579,9 @@ function hangman_onincorrect( $cm, $wordline, $word, $game, $attempt, $hangman, 
         } else {
             echo get_string( 'hangman_correct_word', 'game');
         }
-        echo '<span class="hangman-loose">'. $word. '</span>';
+        echo '<span>'. $word. '</span>';
     }
+    echo '</div>';
 
     game_hangman_show_nextword( $cm, $game, $attempt, $hangman, $course);
 }
@@ -611,5 +612,5 @@ function game_hangman_show_nextword( $cm, $game, $attempt, $hangman, $course) {
         }
     }
 
-    echo "<a href=\"{$CFG->wwwroot}/course/view.php?id=$course->id\">".get_string( 'finish', 'game').'</a> ';
+    echo "<a class='endgamebutton' href=\"{$CFG->wwwroot}/course/view.php?id=$course->id\">".get_string( 'finish', 'game').'</a> ';
 }

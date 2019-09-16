@@ -358,10 +358,10 @@ function game_sudoku_showsudoku( $data, $guess, $bshowlegend, $bshowsolution, $o
         return $count;
     }
 
-    echo '<div class="sudoku_win"' . get_string( 'win', 'game') . '</div>';
+    echo '<div class="sudoku_win">' . get_string( 'win', 'game') . '</div>';
     echo "<a href=\"$CFG->wwwroot/mod/game/attempt.php?id={$cm->id}&finishattempt=1\">".
         get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
-    echo "<a href=\"$CFG->wwwroot/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
+    echo "<a class='endgamebutton' class='endgamebutton' href=\"$CFG->wwwroot/course/view.php?id=$cm->course\">".get_string('finish', 'game').'</a> ';
 
     game_updateattempts( $game, $attempt, 1, game_sudoku_check_found_all_numbers(), $cm, $course);
 
@@ -602,11 +602,11 @@ function game_sudoku_showquestions_glossary( $id, $game, $attempt, $sudoku, $off
  * @param stdClass $sudoku
  */
 function game_sudoku_showquestion_onfinish( $id, $game, $attempt, $sudoku) {
-    echo '<div class="sudoku_win"' . get_string( 'win', 'game') . '</div>';
+    echo '<div class="sudoku_win">' . get_string( 'win', 'game') . '</div>';
     echo '<br>';
     echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id=$id\">".
         get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
-    echo "<a href=\"{$CFG->wwwroot}?id=$id\">".get_string( 'finish', 'game').'</a> ';
+    echo "<a class='endgamebutton' href=\"{$CFG->wwwroot}?id=$id\">".get_string( 'finish', 'game').'</a> ';
 }
 
 /**

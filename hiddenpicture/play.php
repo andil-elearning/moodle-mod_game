@@ -500,7 +500,7 @@ function game_hiddenpicture_showquestion_onfinish( $id, $game, $attempt, $hidden
     echo '<br>';
     echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id=$id\">".
         get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
-    echo "<a href=\"{$CFG->wwwroot}?id=$id\">".get_string( 'finish', 'game').'</a> ';
+    echo "<a class='endgamebutton' href=\"{$CFG->wwwroot}?id=$id\">".get_string( 'finish', 'game').'</a> ';
 }
 
 /**
@@ -758,7 +758,7 @@ function game_hiddenpicture_check_mainquestion( $cm, $game, &$attempt, &$hiddenp
     echo "<a class=\"hiddenpicture_nextgame\" href=\"$CFG->wwwroot/mod/game/attempt.php?id={$cm->id}\">";
     echo get_string( 'nextgame', 'game').'</a>';
 
-    echo "<a class=\"hiddenpicture_finish\" href=\"{$CFG->wwwroot}/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
+    echo "<a class=\"hiddenpicture_finish endgamebutton\" href=\"{$CFG->wwwroot}/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
 
     return false;
 }

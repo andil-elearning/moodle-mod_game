@@ -81,7 +81,7 @@ function game_snakes_play( $cm, $game, $attempt, $snakes, $context, $course) {
         echo '<br>';
         echo "<a href=\"$CFG->wwwroot/mod/game/attempt.php?id={$cm->id}\">".
             get_string( 'nextgame', 'game').'</a> &nbsp; &nbsp; &nbsp; &nbsp; ';
-        echo "<a href=\"$CFG->wwwroot/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
+        echo "<a class='endgamebutton' href=\"$CFG->wwwroot/course/view.php?id=$cm->course\">".get_string( 'finish', 'game').'</a> ';
 
         $gradeattempt = 1;
         $finish = 1;
@@ -304,7 +304,7 @@ function game_snakes_showquestion_question( $game, $id, $snakes, $query, $contex
     // Start the form.
     echo "<form id=\"responseform\" method=\"post\" ".
         "action=\"{$CFG->wwwroot}/mod/game/attempt.php\" onclick=\"this.autocomplete='off'\">\n";
-    echo "<center><input type=\"submit\" name=\"finishattempt\" value=\"".get_string('sudoku_submit', 'game')."\"></center>\n";
+    echo "<input type=\"submit\" name=\"finishattempt\" value=\"".get_string('sudoku_submit', 'game')."\">";
 
     // Add a hidden field with the quiz id.
     echo '<input type="hidden" name="id" value="' . s($id) . "\" />\n";
@@ -337,7 +337,7 @@ function game_snakes_showquestion_glossary( $id, $snakes, $query, $game) {
     // Start the form.
     echo "<form id=\"responseform\" method=\"post\" ".
         "action=\"{$CFG->wwwroot}/mod/game/attempt.php\" onclick=\"this.autocomplete='off'\">\n";
-    echo "<center><input type=\"submit\" name=\"finishattempt\" value=\"".get_string('sudoku_submit', 'game')."\"></center>\n";
+    echo "<input type=\"submit\" id='finishattempt' name=\"finishattempt\" value=\"".get_string('sudoku_submit', 'game')."\">";
 
     // Add a hidden field with the queryid.
     echo '<input type="hidden" name="id" value="' . s($id) . "\" />\n";
@@ -348,6 +348,7 @@ function game_snakes_showquestion_glossary( $id, $snakes, $query, $game) {
 
     // Add a hidden field with glossaryentryid.
     echo '<input type="hidden" name="glossaryentryid" value="'.$query->glossaryentryid."\" />\n";
+    echo '<div class="snake_question">';
 
     $sql = "SELECT id,course FROM {$CFG->prefix}glossary WHERE id={$game->glossaryid}";
     $glossary = $DB->get_record_sql( $sql);
@@ -355,9 +356,11 @@ function game_snakes_showquestion_glossary( $id, $snakes, $query, $game) {
     $contextglossary = game_get_context_module_instance( $cmglossary->id);
     $s = game_filterglossary(str_replace( '\"', '"', $entry->definition), $query->glossaryentryid,
         $contextglossary->id, $game->course);
-    echo $s.'<br>';
-
-    echo get_string( 'answer').': ';
+    echo $s;
+    echo '</div>';
+    echo '<span class="snake_answer">';
+    echo get_string('answer').': ';
+    echo '</span>';
     echo "<input type=\"text\" name=\"answer\" size=30 /><br>";
 
     echo "</form>\n";
