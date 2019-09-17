@@ -79,7 +79,7 @@ function create_image( $id, $attemptid, $foundcells, $cells, $filehash, $cols, $
 
     header("Content-type: $mime");
 
-    $color = imagecolorallocate( $imghandle, 200, 100, 500);
+    $color = imagecolorallocate( $imghandle, 100, 100, 100);
 
     $width = $image[ 'width'];
     $height = $image[ 'height'];
