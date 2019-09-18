@@ -562,12 +562,17 @@ function game_hiddenpicture_showquestions_quiz( $id, $game, $attempt, $hiddenpic
             // Print all the questions.
 
             // Add a hidden field with questionids.
-            echo '<input type="hidden" name="questionids" value="'.$questionlist."\" />\n";
+            echo '<input type="hidden" name="questionids" value="'.$questionlist."\" />";
+
         }
+        echo '<div class="questiondiv">';
 
         $number = "<span class='questionnumber'>A$ofs</span>";
         echo $number;
+        echo "<input type=\"submit\" name=\"submit\" class=\"hiddenpicture_submit\" value=\"".get_string('hiddenpicture_submit', 'game')."\">";
         game_print_question( $game, $question, $context);
+        echo '</div>';
+
     }
 
     if ($found) {
@@ -575,9 +580,7 @@ function game_hiddenpicture_showquestions_quiz( $id, $game, $attempt, $hiddenpic
 
         // Finish the form.
         echo '</div>';
-        if (($onlyshow === false) and ($showsolution === false)) {
-            echo "<input type=\"submit\" name=\"submit\" value=\"".get_string('hiddenpicture_submit', 'game')."\">";
-        }
+
 
         echo "</form>\n";
     }
@@ -687,7 +690,7 @@ function game_hiddenpicture_showquestion_glossary( $game, $id, $query) {
     echo '<span class="hiddenpicture_question">' . game_show_query( $game, $query, $entry->definition) . '</span>';
     $game->glossaryid = $temp;
 
-    echo ' ' . get_string( 'answer').': ';
+    echo '<label for="answer"> ' . get_string( 'answer').': </label>';
     echo "<input type=\"text\" name=\"answer\" size=30 /><br>";
 
     echo "</form><br>";
