@@ -581,7 +581,6 @@ function game_hiddenpicture_showquestions_quiz( $id, $game, $attempt, $hiddenpic
         // Finish the form.
         echo '</div>';
 
-
         echo "</form>\n";
     }
 }

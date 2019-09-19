@@ -159,8 +159,12 @@ function game_cryptex_check( $cm, $game, $attempt, $cryptexrec, $q, $answer, $fi
             }
         }
     }
+
     if ($equal == false) {
         game_update_queries( $game, $attempt, $query, 0, $answer2, true);
+
+        echo '<span class="cryptex_answerfalse"> ' . get_string('cryptex_answerfalse', 'game') . ' </span>';
+
         game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm, true, false, false, $context, false, false, $course);
         return;
     }

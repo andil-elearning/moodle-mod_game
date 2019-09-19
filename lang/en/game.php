@@ -163,6 +163,8 @@ $string[ 'win'] = 'Congratulations !!!';
 
 // File cryptex/play.php.
 $string[ 'finish'] = 'End of game';
+$string[ 'cryptex_answerfalse'] = 'Wrong answer';
+
 
 // File db/access.php.
 $string[ 'game:addinstance'] = 'Add a new game';
