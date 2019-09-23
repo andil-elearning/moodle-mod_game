@@ -1028,8 +1028,8 @@ if ($game->param3 == 2) {
 ?>
 <div id="worderror"></div>
 
-<button id="okbutton" type="button" class="button" onclick="OKClick();">OK</button>
-<button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
+<button id="okbutton" type="button" class="button" onclick="OKClick();"><?php echo get_string('ok'); ?></button>
+<button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();"><?php echo get_string('cancel'); ?></button>
 
 </div>
 
@@ -1056,8 +1056,8 @@ function game_cross_show_welcome1() {
 <div id="worderror"></div>
 
 
-<button id="okbutton" type="button" class="button" onclick="OKClick();">OK</button>
-<button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
+<button id="okbutton" type="button" class="button" onclick="OKClick();"><?php echo get_string('ok'); ?></button>
+<button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();"><?php echo get_string('cancel'); ?></button>
 
 <div id="answerbox2" class="crossword-answerboxstyle" style="display:none;">
 <h3 id="wordlabel"> </h3>

@@ -291,8 +291,8 @@ function game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm,
 
 <div class="cryptex_answer"><input id="answer" name="answer" type="text" autocomplete="off"></div>
 
-<button id="okbutton" type="submit" class="button">OK</button>
-<button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();">Cancel</button>
+<button id="okbutton" type="submit" class="button"><?php echo get_string('ok'); ?></button>
+<button id="cancelbutton" type="button" class="button" onclick="DeselectCurrentWord();"><?php echo get_string('cancel'); ?></button>
 </td></tr></table>
 </form>
 </td>
