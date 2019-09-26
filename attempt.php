@@ -198,6 +198,12 @@ function game_do_attempt( $game, $action, $course, $context, $cm) {
             $attempt = game_getattempt( $game, $detail);
             game_hiddenpicture_check_mainquestion( $cm, $game, $attempt, $detail, $endofgame, $context, $course);
             break;
+        case 'hiddenpicturecheckgl': // The student tries to guess a glossaryentry.
+            $attempt = game_getattempt( $game, $detail);
+            $endofgame = array_key_exists( 'endofgame', $_GET);
+            $continue = game_sudoku_check_glossaryentries( $cm, $game, $attempt, $detail, $endofgame, $course);
+            $continue = true;
+            break;
         default:
             $continue = true;
             break;

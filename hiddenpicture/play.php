@@ -344,7 +344,7 @@ function game_hiddenpicture_showquestions_glossary( $id, $game, $attempt, $hidde
     // Add a hidden field with the quiz id.
     echo '<div>';
     echo '<input type="hidden" name="id" value="' . s($id) . "\" />\n";
-    echo '<input type="hidden" name="action" value="hiddenpicturecheckg" />';
+    echo '<input type="hidden" name="action" value="hiddenpicturecheckgl" />';
 
     $query = $DB->get_record_select( 'game_queries', "attemptid=$hiddenpicture->id AND mycol=0",
     null, 'id,glossaryentryid,attachment,questiontext');
