@@ -237,6 +237,7 @@ $string[ 'sudoku_creating'] = 'Creating <b>{$a}</b> sudoku';
 $string[ 'sudoku_finishattemptbutton'] = 'End of game';
 $string[ 'sudoku_guessnumber'] = 'Guess the correct number';
 $string[ 'sudoku_noentriesfound'] = 'No words found in glossary';
+$string[ 'sudoku_answerfalse'] = 'Answered false';
 
 // File export.php.
 $string[ 'export'] = 'Export';

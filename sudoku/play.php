@@ -633,7 +633,6 @@ function game_sudoku_check_questions( $cm, $game, $attempt, $sudoku, $finishatte
     global $DB;
 
     $responses = data_submitted();
-
     $offsetquestions = game_sudoku_compute_offsetquestions( $game->sourcemodule, $attempt, $numbers, $correctquestions);
 
     $questionlist = game_sudoku_getquestionlist( $offsetquestions);
@@ -701,6 +700,7 @@ function game_sudoku_check_glossaryentries( $cm, $game, $attempt, $sudoku, $fini
             continue;
         }
         if (game_upper( $entry->concept) != game_upper( $answer)) {
+            echo ('<span class=\'sudoku_answerfalse\'>' . get_string('sudoku_answerfalse', 'game') . '</span>');
             continue;
         }
         // Correct answer.
@@ -761,9 +761,9 @@ function game_sudoku_check_last( $cm, $game, $attempt, $sudoku, $finishattempt, 
  */
 function game_sudoku_check_number( $id, $game, $attempt, $sudoku, $pos, $num, $context, $course) {
     global $DB;
-
     $correct = game_substr( $sudoku->data, $pos - 1, 1);
     if ($correct != $num) {
+        echo ('<span class=\'sudoku_answerfalse\'>' . get_string('sudoku_answerfalse', 'game') . '</span>');
         game_sudoku_play( $id, $game, $attempt, $sudoku, false, false, $context, $course);
         return;
     }
@@ -778,6 +778,5 @@ function game_sudoku_check_number( $id, $game, $attempt, $sudoku, $pos, $num, $c
     if (!$DB->set_field_select('game_sudoku', 'guess', $sudoku->guess, "id=$sudoku->id")) {
         print_error( 'game_sudoku_check_number: Cannot update table game_sudoku');
     }
-
     game_sudoku_play( $id, $game, $attempt, $sudoku, false, false, $context, $course);
 }
