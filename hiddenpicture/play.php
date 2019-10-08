@@ -550,9 +550,6 @@ function game_hiddenpicture_showquestions_quiz( $id, $game, $attempt, $hiddenpic
             // Start the form.
             echo "<form id=\"responseform\" method=\"post\" ".
                 "action=\"{$CFG->wwwroot}/mod/game/attempt.php\" onclick=\"this.autocomplete='off'\">";
-            if (($onlyshow === false) and ($showsolution === false)) {
-                echo "<input type=\"submit\" name=\"submit\" value=\"".get_string('hiddenpicture_submit', 'game')."\">";
-            }
 
             // Add a hidden field with the quiz id.
             echo '<div>';
