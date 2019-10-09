@@ -187,7 +187,7 @@ function game_millionaire_showgrid( $game, $millionaire, $id, $query, $aanswer, 
     echo html_writer::end_div();
 
     echo html_writer::start_div('millionnaire-progress-wrapper');
-    $aval = [100, 200, 300, 400, 500, 1000, 1500, 2000, 4000, 5000, 10000, 20000, 40000, 80000, 150000];
+    $aval = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 12000, 24000, 36000, 72000, 150000, 300000, 1000000];
     for ($i = 15; $i >= 1; $i--) {
         $statusclass = (($i < $level + 1) ? ' done' : (($i == $level +1) ? ' current' : ''));
         echo html_writer::start_div('millionnaire-progress' . $statusclass);
