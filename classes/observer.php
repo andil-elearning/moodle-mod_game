@@ -18,7 +18,7 @@ namespace mod_game;
 defined('MOODLE_INTERNAL') || die();
 
 class observer {
-    public static function glossary_updated(\mod_glossary\event\entry_deleted $event) {
+    public static function glossary_updated(\block_wok_connector\event\glossary_update $event) {
         global $DB;
 
         $gamekindlist = "'snakes', 'sudoku', 'hiddenpicture'";

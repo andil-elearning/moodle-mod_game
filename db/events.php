@@ -18,7 +18,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $observers = [
         [
-                'eventname' => '\mod_glossary\event\entry_deleted',
+                'eventname' => '\block_wok_connector\event\glossary_update',
                 'callback' => '\mod_game\observer::glossary_updated'
         ]
 ];
