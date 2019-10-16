@@ -30,12 +30,12 @@ class observer {
         );
         if ($games) {
             foreach ($games as $game) {
-                $attemps = $DB->get_records('game_attempts', ['gameid' => $game->id, 'timefinish' => 0]);
-                foreach ($attemps as $attemp) {
-                    $attemp->timefinish = time();
-                    $attemp->timelastattempt = time();
-                    $attemp->attemps = (($attemp->attemps != null) ? $attemp->attemps + 1 : 1);
-                    $DB->update_record('game_attempts', $attemp);
+                $attempts = $DB->get_records('game_attempts', ['gameid' => $game->id, 'timefinish' => 0]);
+                foreach ($attempts as $attempt) {
+                    $attempt->timefinish = time();
+                    $attempt->timelastattempt = $attempt->timelastattempt ? $attempt->timelastattempt : time();
+                    $attempt->attempts = $attempt->attempts ? $attempt->attempts + 1 : 1;
+                    $DB->update_record('game_attempts', $attempt);
                 }
             }
         }
