@@ -34,7 +34,7 @@ class observer {
                 foreach ($attempts as $attempt) {
                     $attempt->timefinish = time();
                     $attempt->timelastattempt = $attempt->timelastattempt ? $attempt->timelastattempt : time();
-                    $attempt->attempts = $attempt->attempts ? $attempt->attempts + 1 : 1;
+                    $attempt->attempts = $attempt->attempts ? $attempt->attempts : 1;
                     $DB->update_record('game_attempts', $attempt);
                 }
             }

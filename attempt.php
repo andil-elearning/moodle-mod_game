@@ -76,6 +76,23 @@ function game_show_header( &$id, &$game, &$course, &$context, &$cm) {
         }
     }
 
+    $attempt = ($DB->get_record_sql("
+    select *
+    from {game_attempts}
+    where gameid = $game->id
+    and userid = $USER->id
+    and id = (
+        select max(id)
+        from {game_attempts}
+        where gameid = $game->id
+        and userid = $USER->id
+    )
+    "));
+    if ($attempt->timefinish > 0) {
+        redirect(
+            new moodle_url('/mod/game/view.php', ['id' => $cm->id])
+        );
+    }
     // Check login and get context.
     require_login($course->id, false, $cm);
     $context = game_get_context_module_instance( $cm->id);
@@ -133,7 +150,7 @@ function game_show_header( &$id, &$game, &$course, &$context, &$cm) {
  * @param stdClass $cm
  */
 function game_do_attempt( $game, $action, $course, $context, $cm) {
-    global $OUTPUT;
+    global $OUTPUT, $DB, $USER;
 
     $forcenew = optional_param('forcenew', false, PARAM_BOOL); // Teacher has requested new preview.
     $endofgame = optional_param('endofgame', false, PARAM_BOOL);
