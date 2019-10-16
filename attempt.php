@@ -76,23 +76,6 @@ function game_show_header( &$id, &$game, &$course, &$context, &$cm) {
         }
     }
 
-    $attempt = ($DB->get_record_sql("
-    select *
-    from {game_attempts}
-    where gameid = $game->id
-    and userid = $USER->id
-    and id = (
-        select max(id)
-        from {game_attempts}
-        where gameid = $game->id
-        and userid = $USER->id
-    )
-    "));
-    if ($attempt->timefinish > 0) {
-        redirect(
-            new moodle_url('/mod/game/view.php', ['id' => $cm->id])
-        );
-    }
     // Check login and get context.
     require_login($course->id, false, $cm);
     $context = game_get_context_module_instance( $cm->id);
@@ -137,6 +120,35 @@ function game_show_header( &$id, &$game, &$course, &$context, &$cm) {
     $PAGE->set_title($title);
     $PAGE->set_heading($course->fullname);
     $PAGE->add_body_class('mod-game-' . $game->gamekind);
+
+    $attempt = ($DB->get_record_sql("
+    select *
+    from {game_attempts}
+    where gameid = $game->id
+    and userid = $USER->id
+    and id = (
+        select max(id)
+        from {game_attempts}
+        where gameid = $game->id
+        and userid = $USER->id
+    )
+    "));
+    $currentattempt = game_getattempt( $game, $detail);
+
+    if (!$currentattempt && $attempt->timefinish > 0) {
+        $newattempt = new stdClass();
+        $newattempt->gameid = $attempt->gameid;
+        $newattempt->userid = $attempt->userid;
+        $newattempt->timestart = time();
+        $newattempt->timefinish = 0;
+        $newattempt->lastattempt = 0;
+        $newattempt->attempt = $attempt->attempt + 1;
+        $DB->insert_record('game_attempts', $newattempt);
+        redirect(
+            new moodle_url('/mod/game/view.php', ['id' => $cm->id])
+        );
+    }
+
     echo $OUTPUT->header();
 }
 
@@ -162,7 +174,6 @@ function game_do_attempt( $game, $action, $course, $context, $cm) {
     $finishattempt = optional_param('finishattempt',  '', PARAM_TEXT);
     $answer = optional_param('answer',  '', PARAM_TEXT);
     $continue = false;
-
     // Print the main part of the page.
     switch ( $action) {
         case 'crosscheck':
