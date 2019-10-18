@@ -134,19 +134,20 @@ function game_show_header( &$id, &$game, &$course, &$context, &$cm) {
     )
     "));
     $currentattempt = game_getattempt( $game, $detail);
-
-    if (!$currentattempt && $attempt->timefinish > 0) {
-        $newattempt = new stdClass();
-        $newattempt->gameid = $attempt->gameid;
-        $newattempt->userid = $attempt->userid;
-        $newattempt->timestart = time();
-        $newattempt->timefinish = 0;
-        $newattempt->lastattempt = 0;
-        $newattempt->attempt = $attempt->attempt + 1;
-        $DB->insert_record('game_attempts', $newattempt);
-        redirect(
-            new moodle_url('/mod/game/view.php', ['id' => $cm->id])
-        );
+    if ($attempt) {
+        if (!$currentattempt && $attempt->timefinish > 0) {
+            $newattempt = new stdClass();
+            $newattempt->gameid = $attempt->gameid;
+            $newattempt->userid = $attempt->userid;
+            $newattempt->timestart = time();
+            $newattempt->timefinish = 0;
+            $newattempt->lastattempt = 0;
+            $newattempt->attempt = $attempt->attempt + 1;
+            $DB->insert_record('game_attempts', $newattempt);
+            redirect(
+                new moodle_url('/mod/game/view.php', ['id' => $cm->id])
+            );
+        }
     }
 
     echo $OUTPUT->header();
@@ -208,7 +209,8 @@ function game_do_attempt( $game, $action, $course, $context, $cm) {
             break;
         case 'cryptexcheck':    // The user tries to guess a question.
             $attempt = game_getattempt( $game, $detail);
-            game_cryptex_check( $cm, $game, $attempt, $detail, $q, $answer, $finishattempt, $context, $course);
+            $showsolution = optional_param('showsolution', false, PARAM_BOOL);
+            game_cryptex_check( $cm, $game, $attempt, $detail, $q, $answer, $finishattempt, $context, $course, $showsolution);
             break;
         case 'bookquizcheck':   // The student tries to answer a question.
             $attempt = game_getattempt( $game, $detail);

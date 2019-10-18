@@ -41,14 +41,15 @@ require_once( "crossdb_class.php");
  * @param stdClass $course
  */
 function game_cross_continue( $cm, $game, $attempt, $cross, $g, $endofgame, $context, $course) {
+    $showsolution = false;
     if ($endofgame) {
         if ($g == '') {
             $endofgame = false;
         }
+        $showsolution = true;
     }
-
     if ($attempt != false and $cross != false) {
-        return game_cross_play( $cm, $game, $attempt, $cross, $g, false, false, $endofgame,
+        return game_cross_play( $cm, $game, $attempt, $cross, $g, false, $showsolution, $endofgame,
             false, false, false, false, true, $context, $course);
     }
 
@@ -60,7 +61,7 @@ function game_cross_continue( $cm, $game, $attempt, $cross, $g, $endofgame, $con
     if ($g != '') {
         game_updateattempts( $game, $attempt, 0, 0, $cm, $course);
     }
-    return game_cross_play( $cm, $game, $attempt, $crossm, '', false, false, false,
+    return game_cross_play( $cm, $game, $attempt, $crossm, '', false, $showsolution, false,
         false, false, false, false, true, $context, $course);
 }
 
@@ -173,7 +174,6 @@ function game_cross_play( $cm, $game, $attempt, $crossrec, $g, $onlyshow, $shows
     global $CFG, $DB;
 
     $cross = new CrossDB();
-
     $language = $attempt->language;
     $info = $cross->loadcross( $g, $done, $html, $game, $attempt, $crossrec, $onlyshow,
         $showsolution, $endofgame, $showhtmlsolutions, $attempt->language,

@@ -2429,7 +2429,6 @@ function game_get_version() {
  */
 function game_can_start_new_attempt( $game) {
     global $DB, $USER;
-
     if ($game->maxattempts == 0) {
         return true;
     }

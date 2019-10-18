@@ -281,6 +281,11 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
         $message  = sprintf( get_string( 'hangman_wrongnum', 'game'), $wrong, $max);
         echo ' ALIGN="MIDDLE" BORDER="0" HEIGHT="100" alt="'.$message.'"/>';
 
+        if (optional_param('endanswer', false, PARAM_BOOL)) {
+            $wrong = $max;
+            $game->maxattempts = 0;
+            $hangman->try = 100;
+        }
         if ($wrong >= $max) {
             // This word is incorrect. If reach the max number of word I have to finish else continue with next word.
             hangman_onincorrect( $cm, $wordline, $query->answertext, $game, $attempt, $hangman,
@@ -314,7 +319,16 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
         // This word is correct. If reach the max number of word I have to finish else continue with next word.
         hangman_oncorrect( $cm, $wordline, $game, $attempt, $hangman, $query, $course, $onlyshow, $showsolution);
     }
-
+    if (!optional_param('endanswer', false, PARAM_BOOL)) {
+        echo "<span class='end_answer'>" .
+            html_writer::link(
+                new moodle_url(
+                    '',
+                    ['endanswer' => true,
+                    'q' => $game->id]),
+                get_string('endanswer', 'game')) .
+        "</span>";
+    }
     echo "<br/><br/>".get_string( 'grade', 'game').' : '.round( $query->percent * 100).' %';
     if ($hangman->maxtries > 1) {
         $percent = ($correct - $wrong / $max) / game_strlen( $query->answertext);
@@ -561,7 +575,6 @@ function hangman_oncorrect( $cm, $wordline, $game, $attempt, $hangman, $query, $
  */
 function hangman_onincorrect( $cm, $wordline, $word, $game, $attempt, $hangman, $onlyshow, $showsolution, $course, $wordline2) {
     echo "<span class=\"hangman-onincorret\">$wordline</span>";
-
     if ( $showsolution && $wordline2 != '') {
         echo "<span class=\"hangman-onincorret\">$wordline2</span>";
     }
@@ -571,6 +584,7 @@ function hangman_onincorrect( $cm, $wordline, $word, $game, $attempt, $hangman, 
     }
     echo '<div class="hangman-loose">';
     echo '<span>'.get_string( 'hangman_loose', 'game').'</span>';
+    echo '<span>'.get_string( 'hangman_loose_answer', 'game') . ' ' . $word . '</span>';
 
     if ($game->param6) {
         // Show the correct answer.
@@ -605,7 +619,6 @@ function game_hangman_show_nextword( $cm, $game, $attempt, $hangman, $course) {
         echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?$params";
     } else {
         game_hangman_onfinishgame( $cm, $game, $attempt, $hangman, $course);
-
         if (game_can_start_new_attempt( $game)) {
             echo "<a href=\"{$CFG->wwwroot}/mod/game/attempt.php?id={$cm->id}\">".
                 get_string( 'nextgame', 'game').'</a>';

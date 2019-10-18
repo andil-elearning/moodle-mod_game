@@ -257,6 +257,7 @@ $string[ 'javame_version'] = 'Version:';
 
 // File exporthtml_hangman.php.
 $string[ 'hangman_loose'] = 'Game over';
+$string[ 'hangman_loose_answer'] = 'Word was:';
 $string[ 'html_hangman_new'] = 'New';
 
 // File exporthtml_millionaire.php.
@@ -462,3 +463,5 @@ $string[ 'gamenotavailable'] = 'The game will not be available until {$a}';
 $string[ 'gameopenedon'] = 'This game opened at {$a}';
 $string[ 'reattemptgame'] = 'Reattempt game';
 $string[ 'yourfinalgradeis'] = 'Your final grade for this game is {$a}.';
+
+$string[ 'endanswer'] = 'Show answer and end game';

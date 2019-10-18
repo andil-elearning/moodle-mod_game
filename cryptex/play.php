@@ -40,14 +40,16 @@ require_once( "cryptexdb_class.php");
 function game_cryptex_continue( $cm, $game, $attempt, $cryptexrec, $endofgame, $context, $course) {
     global $DB, $USER;
 
+    $showsolution = false;
     if ($endofgame) {
         game_updateattempts( $game, $attempt, -1, true, $cm, $course);
         $endofgame = false;
+        // $showsolution = true;
     }
 
     if ($attempt != false and $cryptexrec != false) {
         $crossm = $DB->get_record( 'game_cross', array( 'id' => $attempt->id));
-        return game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm, false, false, false, $context, false, true, $course);
+        return game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm, false, false, $showsolution, $context, false, true, $course);
     }
 
     if ($attempt === false) {
@@ -128,7 +130,7 @@ function game_cryptex_continue( $cm, $game, $attempt, $cryptexrec, $endofgame, $
  * @param stdClass $context
  * @param stdClass $course
  */
-function game_cryptex_check( $cm, $game, $attempt, $cryptexrec, $q, $answer, $finishattempt, $context, $course) {
+function game_cryptex_check( $cm, $game, $attempt, $cryptexrec, $q, $answer, $finishattempt, $context, $course, $showsolution) {
     global $DB;
 
     if ($finishattempt) {
@@ -143,6 +145,10 @@ function game_cryptex_check( $cm, $game, $attempt, $cryptexrec, $q, $answer, $fi
     }
 
     $crossm = $DB->get_record_select( 'game_cross', "id=$attempt->id");
+    if ($showsolution) {
+        game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm, true, false, $showsolution, $context, false, true, $course);
+        return;
+    }
     $query = $DB->get_record_select( 'game_queries', "id=$q");
 
     $answer1 = trim( game_upper( $query->answertext));
@@ -172,7 +178,7 @@ function game_cryptex_check( $cm, $game, $attempt, $cryptexrec, $q, $answer, $fi
     game_update_queries( $game, $attempt, $query, 1, $answer2);
 
     $onlyshow = false;
-    $showsolution = false;
+    // $showsolution = false;
     game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm, true, $onlyshow, $showsolution, $context, false, true, $course);
 }
 
@@ -195,7 +201,6 @@ function game_cryptex_check( $cm, $game, $attempt, $cryptexrec, $q, $answer, $fi
 function game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm,
         $updateattempt, $onlyshow, $showsolution, $context, $print, $showhtmlprintbutton, $course) {
     global $CFG, $DB;
-
     if ($game->toptext != '') {
         echo $game->toptext.'<br>';
     }
@@ -304,6 +309,10 @@ function game_cryptex_play( $cm, $game, $attempt, $cryptexrec, $crossm,
 if ($showhtmlprintbutton && !$finished) {
     echo '<br><button class="endgamebutton" id="finishattemptbutton" type="button" onclick="OnEndGame();" >'.get_string( 'finish', 'game');
     echo '</button>';
+    if (!$showsolution) {
+        echo '<br><button class="endanswerbutton" id="endanswerbutton" type="button" onclick="OnEndanswerGame();" >'.get_string( 'endanswer', 'game');
+        echo '</button>';
+    }
     echo '<button id="printbutton" type="button" onclick="OnPrint();" >'.get_string( 'print', 'game');
     echo '</button><br>';
 }
@@ -333,6 +342,14 @@ if ($showhtmlprintbutton) {
         global $CFG;
 
         $params = 'id='.$cm->id.'&action=cryptexcheck&g=&finishattempt=1';
+        echo "window.location = \"{$CFG->wwwroot}/mod/game/attempt.php?$params\";\r\n";
+?>
+    }
+    function OnEndanswerGame() {
+<?php
+        global $CFG;
+
+        $params = 'id='.$cm->id.'&showsolution=true&action=cryptexcheck&g=';
         echo "window.location = \"{$CFG->wwwroot}/mod/game/attempt.php?$params\";\r\n";
 ?>
     }
