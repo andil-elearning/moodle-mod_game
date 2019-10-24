@@ -73,7 +73,6 @@ function game_snakes_play( $cm, $game, $attempt, $snakes, $context, $course) {
 
     $board = game_snakes_get_board( $game);
     $showboard = false;
-
     if ($snakes->position > $board->usedcols * $board->usedrows && $snakes->queryid <> 0) {
         $finish = true;
 
@@ -470,7 +469,6 @@ function game_snakes_position( $cm, $game, $attempt, $snakes, $correct, $query, 
     global $DB;
 
     $data = $DB->get_field( 'game_snakes_database', 'data', array( 'id' => $snakes->snakesdatabaseid));
-
     if ($correct) {
         if (($next = game_snakes_foundlander( $snakes->position + $snakes->dice, $data))) {
             $snakes->position  = $next;
@@ -478,6 +476,7 @@ function game_snakes_position( $cm, $game, $attempt, $snakes, $correct, $query, 
             $snakes->position  = $snakes->position + $snakes->dice;
         }
     } else {
+        echo '<span class="snkae_answerfalse">' . get_string('wrong_answer', 'mod_game') . '</span>';
         if (($next = game_snakes_foundsnake( $snakes->position, $data))) {
             $snakes->position  = $next;
         }

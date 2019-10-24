@@ -465,3 +465,4 @@ $string[ 'reattemptgame'] = 'Reattempt game';
 $string[ 'yourfinalgradeis'] = 'Your final grade for this game is {$a}.';
 
 $string[ 'endanswer'] = 'Show answer and end game';
+$string[ 'wrong_answer'] = 'Wrong answer';
