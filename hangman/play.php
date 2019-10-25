@@ -584,7 +584,6 @@ function hangman_onincorrect( $cm, $wordline, $word, $game, $attempt, $hangman, 
     }
     echo '<div class="hangman-loose">';
     echo '<span>'.get_string( 'hangman_loose', 'game').'</span>';
-    echo '<span>'.get_string( 'hangman_loose_answer', 'game') . ' ' . $word . '</span>';
 
     if ($game->param6) {
         // Show the correct answer.
