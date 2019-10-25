@@ -476,7 +476,7 @@ function game_snakes_position( $cm, $game, $attempt, $snakes, $correct, $query, 
             $snakes->position  = $snakes->position + $snakes->dice;
         }
     } else {
-        echo '<span class="snkae_answerfalse">' . get_string('wrong_answer', 'mod_game') . '</span>';
+        echo '<span class="snake_answerfalse">' . get_string('wrong_answer', 'mod_game') . '</span>';
         if (($next = game_snakes_foundsnake( $snakes->position, $data))) {
             $snakes->position  = $next;
         }
