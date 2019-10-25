@@ -570,7 +570,7 @@ function game_sudoku_showquestions_glossary( $id, $game, $attempt, $sudoku, $off
         $query = new StdClass;
         $query->glossaryid = $game->glossaryid;
         $query->glossaryentryid = $entry->id;
-        $s = '<div class= "questionline"> <span class="questionnumber"> A'.$ofs.'.</span> '.game_show_query( $game, $query, $entry->definition, 0) . "</div>";
+        $s = '<div class= "questionline"> <span class="questionnumber"> A'.$ofs.'</span> '.game_show_query( $game, $query, $entry->definition, 0) . "</div>";
         $s .= '<div class="answerline">';
         if ($showsolution) {
             $s .= '<span class="answer">' . get_string( 'answer').': </span>';
