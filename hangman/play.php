@@ -319,7 +319,7 @@ function game_hangman_play( $cm, $game, $attempt, $hangman, $onlyshow, $showsolu
         // This word is correct. If reach the max number of word I have to finish else continue with next word.
         hangman_oncorrect( $cm, $wordline, $game, $attempt, $hangman, $query, $course, $onlyshow, $showsolution);
     }
-    if (!optional_param('endanswer', false, PARAM_BOOL)) {
+    if (!optional_param('endanswer', false, PARAM_BOOL) && $wrong < $max) {
         echo "<span class='end_answer'>" .
             html_writer::link(
                 new moodle_url(
