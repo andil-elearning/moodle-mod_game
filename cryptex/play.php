@@ -384,15 +384,19 @@ foreach ($questions as $key => $q) {
     if (($onlyshow == false) and ($showsolution == false)) {
         if (($game->param8 == 0) || ($game->param8 > $q->tries)) {
             $question .= ' <div class="cryptex_answerbutton" > <input type="submit" value="'.
-            get_string( 'answer').'" onclick="OnCheck( '.$q->id.",msg{$q->id});\" /> </div>";
+            get_string( 'answer').'" onclick="OnCheck( '.$q->id.",msg{$q->id});\" /
+            > </div>";
         }
     }
-    echo '<div class="cryptex_answerline" >' . $question . '</div>';
+    echo '<div class="cryptex_answerline">' . $question;
 
     if ($showsolution) {
-        echo "$q->answertext";
+        echo "<div class='cryptex_rightanswer'>";
+        echo "<span class='cryptex_rightanswer'>" . get_string('answer') . " : </span>";
+        echo "<span class='cryptex_rightanswerword'>$q->answertext</span>";
+        echo '</div>';
     }
-    echo '<br>';
+    echo '</div>';
 }
 
 if ($game->bottomtext != '') {
