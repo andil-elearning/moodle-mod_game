@@ -1896,7 +1896,7 @@ function game_print_question_multichoice( $game, $question, $context) {
         }
         $a->answer = game_filterquestion_answer(str_replace( '\"', '"', $a->answer), $a->id, $context->id, $game->course);
         $answer->control = "<input  id=\"resp{$question->id}_{$a->id}\" name=\"resp{$question->id}_\"  ".
-            " type=\"radio\" value=\"{$a->id}\" /> ".$a->answer;
+            " type=\"radio\" value=\"{$a->id}\" /> <label for=\"resp{$question->id}_\">". $a->answer ."</label>";
         $answer->class = 'radio';
         $answer->id = $a->id;
         $answer->text = $a->answer;
@@ -1959,7 +1959,7 @@ function game_print_question_multianswer( $game, $question, $context) {
         }
         $a->answer = game_filterquestion_answer(str_replace( '\"', '"', $a->answer), $a->id, $context->id, $game->course);
         $answer->control = "<input  id=\"resp{$question->id}_{$a->id}\" name=\"resp{$question->id}_{$a->id}\"  ".
-            " type=\"checkbox\" value=\"{$a->id}\" /> ".$a->answer;
+            " type=\"checkbox\" value=\"{$a->id}\" /> <label for=\"resp{$question->id}_{$a->id}\">".$a->answer."</label>";
         $answer->class = 'radio';
         $answer->id = $a->id;
         $answer->text = $a->answer;
