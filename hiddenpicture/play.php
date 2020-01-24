@@ -564,7 +564,7 @@ function game_hiddenpicture_showquestions_quiz( $id, $game, $attempt, $hiddenpic
         }
         echo '<div class="questiondiv">';
 
-        $number = "<span class='questionnumber'>$ofs</span>";
+        $number = "<span id='a$ofs' class='questionnumber'>$ofs</span>";
         echo $number;
         echo "<input type=\"submit\" name=\"submit\" class=\"hiddenpicture_submit\" value=\"".get_string('hiddenpicture_submit', 'game')."\">";
         game_print_question( $game, $question, $context);
