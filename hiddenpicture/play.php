@@ -799,7 +799,7 @@ function game_showpicture( $id, $game, $attempt, $query, $cells, $foundcells, $u
         $width = $image[ 'width'];
         $height = $image[ 'height'];
     }
-
+    echo '<div class="hidden_picture_mapimg">';
     echo "<IMG SRC=\"$imagesrc\" width=$width ";
     if ($usemap) {
         echo " USEMAP=\"#mapname\" ";
@@ -822,6 +822,7 @@ function game_showpicture( $id, $game, $attempt, $query, $cells, $foundcells, $u
         }
         echo "</MAP>";
     }
+    echo "</div>";
 }
 /**
  * Check glossary entries
