@@ -194,7 +194,8 @@ class CrossDB extends Cross {
 
         $a = array();
         if ($correctletters) {
-            $ret .= '<span class="crossword-foundsentence">';
+            $ret .= '<div class="crossword-foundsentence">';
+            $ret .= '<span>';
             $a[] = $correctletters.' '.
                 ( $correctletters > 1 ? get_string( 'cross_corrects', 'game') : get_string( 'cross_correct', 'game')) . '</span>';
         }
@@ -223,6 +224,7 @@ class CrossDB extends Cross {
             }
         }
         $ret .= '</span>';
+        $ret .= '</div>';
 
         $done = ( $restletters == 0 ? true : false);
 
@@ -235,7 +237,7 @@ class CrossDB extends Cross {
         }
 
         $score = $correctletters / ($correctletters + $restletters);
-        $ret .= '<br>'.get_string( 'grade', 'game').' '.round( $score * 100).' %';
+        // $ret .= get_string( 'grade', 'game').' '.round( $score * 100).' %';
 
         game_updateattempts( $game, $attempt, $score, $done, $cm, $course);
 
