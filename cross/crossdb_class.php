@@ -224,7 +224,9 @@ class CrossDB extends Cross {
             }
         }
         $ret .= '</span>';
-        $ret .= '</div>';
+        if ($correctletters) {
+            $ret .= '</div>';
+        }
 
         $done = ( $restletters == 0 ? true : false);
 
