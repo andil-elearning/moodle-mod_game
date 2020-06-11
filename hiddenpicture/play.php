@@ -929,7 +929,7 @@ function game_hiddenpicture_check_questions( $cm, $game, $attempt, $hiddenpictur
         $query = new stdClass();
 
         $select = "attemptid=$attempt->id";
-        $select .= " AND questionid=$question->id";
+        $select .= " AND (questionid=$question->id OR glossaryentryid=$question->id)";
         if (($query->id = $DB->get_field_select( 'game_queries', 'id', $select)) == 0) {
             die( "problem game_hiddenpicture_check_questions (select=$select)");
             continue;
